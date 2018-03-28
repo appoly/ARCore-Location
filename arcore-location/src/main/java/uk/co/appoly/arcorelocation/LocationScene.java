@@ -2,18 +2,18 @@ package uk.co.appoly.arcorelocation;
 
 import android.app.Activity;
 import android.content.Context;
+import android.opengl.Matrix;
 import android.os.Handler;
 
-import uk.co.appoly.arcorelocation.sensor.DeviceOrientation;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
+import com.john.arcorelocation.sensor.DeviceLocation;
+import com.john.arcorelocation.sensor.DeviceOrientation;
+import com.john.arcorelocation.utils.LocationUtils;
 
 import java.util.ArrayList;
-
-import uk.co.appoly.arcorelocation.sensor.DeviceLocation;
-import uk.co.appoly.arcorelocation.utils.LocationUtils;
 
 /**
  * Created by John on 02/03/2018.
@@ -43,8 +43,8 @@ public class LocationScene {
     public ArrayList<LocationMarker> mLocationMarkers = new ArrayList<>();
     private Handler mHandler = new Handler();
 
-    public uk.co.appoly.arcorelocation.sensor.DeviceLocation deviceLocation;
-    public uk.co.appoly.arcorelocation.sensor.DeviceOrientation deviceOrientation;
+    public DeviceLocation deviceLocation;
+    public DeviceOrientation deviceOrientation;
 
     public static Context mContext;
     public static Activity mActivity;
@@ -92,7 +92,7 @@ public class LocationScene {
                 rotatedPose.toMatrix(mAnchorMatrix, 0);
 
                 int markerDistance = (int) Math.ceil(
-                        uk.co.appoly.arcorelocation.utils.LocationUtils.distance(
+                        LocationUtils.distance(
                                 locationMarker.latitude,
                                 deviceLocation.currentBestLocation.getLatitude(),
                                 locationMarker.longitude,

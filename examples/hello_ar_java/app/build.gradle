@@ -31,11 +31,10 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support:design:27.0.2'
 
-    compile 'com.github.appoly:ARCore-Location:-SNAPSHOT'
+    compile 'com.github.appoly:ARCore-Location:9ea6e30d24'
 }
 
 repositories {
-    flatDir {
-        dirs 'libs'
-    }
+
+    maven { url 'https://jitpack.io' }
 }
