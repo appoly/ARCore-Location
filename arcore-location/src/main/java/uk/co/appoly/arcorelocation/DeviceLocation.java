@@ -26,6 +26,7 @@ public class DeviceLocation implements LocationListener {
     public DeviceLocation() {
 
         try {
+            permissionsCheck();
             // Getting LocationManager object
             locationManager = (LocationManager) LocationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
             // Creating an empty criteria object

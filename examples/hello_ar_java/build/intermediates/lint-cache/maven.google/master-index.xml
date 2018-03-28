@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+  <com.android.support.constraint/>
+  <com.android.databinding/>
+  <com.android.support/>
+  <com.android.support.test/>
+  <com.android.support.test.janktesthelper/>
+  <com.android.support.test.uiautomator/>
+  <com.android.support.test.espresso/>
+  <android.arch.persistence.room/>
+  <android.arch.lifecycle/>
+  <android.arch.core/>
+  <com.google.android.instantapps/>
+  <com.google.android.instantapps.thirdpartycompat/>
+  <com.android.java.tools.build/>
+  <com.android.tools/>
+  <com.android.tools.layoutlib/>
+  <com.android.tools.ddms/>
+  <com.android.tools.external.com-intellij/>
+  <com.android.tools.build/>
+  <com.android.tools.analytics-library/>
+  <com.android.tools.internal.build.test/>
+  <com.android.tools.lint/>
+  <com.android.tools.external.org-jetbrains/>
+  <com.android.support.test.espresso.idling/>
+  <com.android.support.test.services/>
+  <com.google.firebase/>
+  <com.google.android.gms/>
+  <com.google.gms/>
+  <android.arch.paging/>
+  <com.crashlytics.sdk.android/>
+  <io.fabric.sdk.android/>
+  <android.arch.persistence/>
+  <com.google.android.wearable/>
+  <com.google.android.support/>
+  <com.android.installreferrer/>
+  <com.google.ar/>
+  <androidx.core/>
+  <com.google.android.things/>
+</metadata>

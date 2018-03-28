@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.0.0/a2d487452376193fc8c103dd2b9bd5f2b1b44563/common-1.0.0.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a2d487452376193fc8c103dd2b9bd5f2b1b44563">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/19.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-compat-27.0.2.aar/adabb86c8e156cfc1cc12ba08ba8e2a6/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b432e82447a3af781e927b9ba0bbb9fe2a496d4a">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/15.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/ARCore-Location-0.0.3.aar/c90d2f9761bc0d033a5e9c1826abc88a/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="4a57283c5520460c505d1265c7b4e4cf8ea138a8">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-27.0.2.aar/841bbb8e5e485b4edca13f8fbd28680a/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="caa03787689212c10939f308a55a8dc8a3333ed2">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/10.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-media-compat-27.0.2.aar/edd371e80e39f250da73a88db5ab1e44/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="25c8cb628374f9a2d59ff9e1172753751e9a9f84">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/14.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-fragment-27.0.2.aar/e6f6d18d0f1f2a54737ffb0d4541f4f9/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="618f75fe11febf263e3234c7da7dc892232a5608">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-core-utils-27.0.2.aar/2e0525b18cbacc1e03716ceaf6820d4c/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="ac2ce6027755bcf49442e70597bec0feb9064f68">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/runtime-1.0.3.aar/6d47c6b06688b40cd14175eb69ceb23e/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="d7cc5473b9cf4ea159a263cd477fb3ecb2987b96">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/17.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/transition-27.0.2.aar/d98059f1bc03a87a8800859806d4a049/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a5fa2e3704f51b30b7b47e12a3a2909728799583">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/12.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/design-27.0.2.aar/07209cdb0780c835fbe599dae24c6982/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="031cc16b7b6e77b3c050134ecab9fa5c2640a069">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/core-0.91.0.aar/dd7ee7686de7e0c3d164c92ee6449b7f/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="1ffde212906cbae970d565a52214d92ffc115c66">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-27.0.2.aar/dfc9ad797a16596a4482570e8f563c0d/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="fe3916317a699975bcce0cba2d13fd2d8cf88922">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.0.3/7d7f60c4783872861222166f6164215f8951c7b1/common-1.0.3.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="7d7f60c4783872861222166f6164215f8951c7b1">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/18.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/27.0.2/b9ef4342c934a1a8b107506273dc8061662a322/support-annotations-27.0.2.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="0b9ef4342c934a1a8b107506273dc8061662a322">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/16.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-v4-27.0.2.aar/b0d00af88b513f9f9d9f2c51cf1b482b/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="bcd0bcdef85b31a656af76e39c0c95ce70800772">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/modules-2/files-2.1/de.javagl/obj/0.2.1/877b065ee223676a5d88a573e41d7ea66706ddcc/obj-0.2.1.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="877b065ee223676a5d88a573e41d7ea66706ddcc">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/support-core-ui-27.0.2.aar/1541f6e4879a0cd980d8fef2f4adba12/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="ed6560f31a6a40b5965f5879d8f2eab1f68def05">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/13.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-27.0.2.aar/7d81726378511639f1cf3ab39eaf6223/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="9296d6f092fcdba4fafb6ac26546a39babdab46a">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/11.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/appcompat-v7-27.0.2.aar/fac333f9dbc976193f03f94113ee4e9f/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="24"
+        optimize="true"
+        revision="26.0.2"
+        sha1="04cd0cacbedcb338f64665b88bad64d145325fbd">
+        <dex dex="/Users/johnwedgbury/Development/Android/github/ARCore-Location/examples/hello_ar_java/app/build/intermediates/transforms/preDex/release/5.jar" />
+    </item>
+
+</items>
