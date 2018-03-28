@@ -64,4 +64,4 @@ dependencies {
 }
 
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.appoly'
+group='com.github.johnwedgbury'

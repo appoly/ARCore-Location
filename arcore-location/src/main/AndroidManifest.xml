@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.john.arcorelocation" >
+    package="uk.co.arcorelocation" >
 
 
     <uses-permission android:name="android.permission.CAMERA" />
