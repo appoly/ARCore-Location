@@ -53,10 +53,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import uk.co.arcorelocation.LocationScene;
-import uk.co.arcorelocation.LocationMarker;
-import uk.co.arcorelocation.rendering.AnnotationRenderer;
-import uk.co.arcorelocation.rendering.ImageRenderer;
+import uk.co.appoly.arcorelocation.LocationScene;
+import uk.co.appoly.arcorelocation.LocationMarker;
+import uk.co.appoly.arcorelocation.rendering.AnnotationRenderer;
+import uk.co.appoly.arcorelocation.rendering.ImageRenderer;
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the

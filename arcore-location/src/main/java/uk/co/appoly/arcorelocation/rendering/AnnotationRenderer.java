@@ -1,4 +1,4 @@
-package com.john.arcorelocation.rendering;
+package uk.co.appoly.arcorelocation.rendering;
 
 /**
  * Created by John on 02/03/2018.
@@ -16,7 +16,7 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.john.arcorelocation.utils.ShaderUtil;
+import uk.co.appoly.arcorelocation.utils.ShaderUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

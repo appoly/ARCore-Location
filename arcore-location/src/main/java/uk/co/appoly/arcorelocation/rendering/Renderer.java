@@ -1,4 +1,4 @@
-package com.john.arcorelocation.rendering;
+package uk.co.appoly.arcorelocation.rendering;
 
 import android.content.Context;
 

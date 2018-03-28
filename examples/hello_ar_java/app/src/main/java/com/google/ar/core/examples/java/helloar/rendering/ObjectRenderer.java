@@ -21,7 +21,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import com.google.ar.core.examples.java.helloar.R;
-import uk.co.arcorelocation.rendering.Renderer;
+import uk.co.appoly.arcorelocation.rendering.Renderer;
 
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;

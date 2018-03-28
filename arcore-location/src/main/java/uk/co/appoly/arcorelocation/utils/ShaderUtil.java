@@ -1,4 +1,4 @@
-package com.john.arcorelocation.utils;
+package uk.co.appoly.arcorelocation.utils;
 
 /*
  * Copyright 2017 Google Inc. All Rights Reserved.

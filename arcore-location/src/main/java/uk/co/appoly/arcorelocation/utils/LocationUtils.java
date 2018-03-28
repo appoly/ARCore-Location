@@ -1,4 +1,4 @@
-package com.john.arcorelocation.utils;
+package uk.co.appoly.arcorelocation.utils;
 
 /**
  * Created by John on 02/03/2018.

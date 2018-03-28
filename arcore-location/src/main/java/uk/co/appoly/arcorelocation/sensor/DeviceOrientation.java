@@ -1,4 +1,4 @@
-package com.john.arcorelocation.sensor;
+package uk.co.appoly.arcorelocation.sensor;
 
 import android.content.Context;
 import android.hardware.Sensor;
