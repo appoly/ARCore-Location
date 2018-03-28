@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-zh-rTW/values-zh-rTW.xml",
+            "map": [
+                {
+                    "source": "/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/7d9d4ce5ffba6a591aef580a3a6b639d/res/values-zh-rTW/values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8",
+                        "startColumns": "0,0,0,0,0",
+                        "startOffsets": "194,237,282,351,422",
+                        "endColumns": "42,44,68,70,56",
+                        "endOffsets": "236,281,350,421,478"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,102,151,224,299",
+                        "endColumns": "46,48,72,74,60",
+                        "endOffsets": "97,146,219,294,355"
+                    }
+                },
+                {
+                    "source": "/Users/johnwedgbury/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/a917c83549b3b61b1da47e229170abec/res/values-zh-rTW/values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,150,257,380,473,573,655,752,860,936,1012,1090,1186,1282,1377,1474,1569,1669,1782,1876,1954",
+                        "endColumns": "94,106,122,92,99,81,96,107,75,75,77,95,95,94,96,94,99,112,93,77,100",
+                        "endOffsets": "145,252,375,468,568,650,747,855,931,1007,1085,1181,1277,1372,1469,1564,1664,1777,1871,1949,2050"
+                    },
+                    "to": {
+                        "startLines": "7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "360,455,562,685,778,878,960,1057,1165,1241,1317,1395,1491,1587,1682,1779,1874,1974,2087,2181,2259",
+                        "endColumns": "94,106,122,92,99,81,96,107,75,75,77,95,95,94,96,94,99,112,93,77,100",
+                        "endOffsets": "450,557,680,773,873,955,1052,1160,1236,1312,1390,1486,1582,1677,1774,1869,1969,2082,2176,2254,2355"
+                    }
+                }
+            ]
+        }
+    ]
+}

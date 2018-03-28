@@ -1,0 +1,49 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+	package
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:2:5-35
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:1-9:12
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.CAMERA
+ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:5:5-65
+	android:name
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:5:22-62
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:6:5-81
+	android:name
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:6:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:7:5-79
+	android:name
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml:7:22-76
+uses-sdk
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		ADDED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
+		INJECTED from /Users/johnwedgbury/Development/Android/github/ARCore-Location/arcore-location/src/main/AndroidManifest.xml
