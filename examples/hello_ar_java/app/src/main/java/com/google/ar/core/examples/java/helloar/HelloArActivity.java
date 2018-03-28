@@ -152,9 +152,9 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         // Annotation at Buckingham Palace
         locationScene.mLocationMarkers.add(
                 new LocationMarker(
-                        0.1419,
-                        51.5014,
-                        new AnnotationRenderer("Buckingham Palace")));
+                        -1.535823,
+                        52.284501,
+                        new AnnotationRenderer("Train Station")));
 
         // Example of using your own renderer.
         // Uses a slightly modified version of hello_ar_java's ObjectRenderer
@@ -168,11 +168,6 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         // Correct heading with touching side of screen
         mSurfaceView.setOnTouchListener(
             new View.OnTouchListener() {
-                private static final float SWIPE_SCALING_FACTOR = 1.15f;
-                private static final float MIN_DELTA = .01f;
-                private float mStartPosition = 0;
-                private float mStartCoordinate = 0;
-
                 @Override
                 public boolean onTouch(View v, MotionEvent e) {
 
