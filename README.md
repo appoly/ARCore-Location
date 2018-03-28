@@ -56,7 +56,7 @@ locationScene.mLocationMarkers.add(
 );
 ```
 
-![Example Annotation](http://smegaupload.co.uk/up/uploads/2969296910211017563386210713327558o1522240691.png "Example Annotation")
+![Example Annotation](http://smegaupload.co.uk/up/uploads/2969296910211017563386210713327558o%2011522240834.png "Example Annotation")
 
 
 Images can similarly be added like so
