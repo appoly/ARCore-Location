@@ -28,10 +28,9 @@ dependencies {
     implementation 'de.javagl:obj:0.2.1'
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.android.support:design:27.0.2'
-    implementation 'com.github.appoly:ARCore-Location:0.0.1'
+    compile 'com.github.appoly:ARCore-Location:0.0.2'
 }
 
 repositories {
-
     maven { url 'https://jitpack.io' }
 }

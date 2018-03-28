@@ -9,9 +9,9 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
-import com.john.arcorelocation.sensor.DeviceLocation;
-import com.john.arcorelocation.sensor.DeviceOrientation;
-import com.john.arcorelocation.utils.LocationUtils;
+import uk.co.appoly.arcorelocation.sensor.DeviceLocation;
+import uk.co.appoly.arcorelocation.sensor.DeviceOrientation;
+import uk.co.appoly.arcorelocation.utils.LocationUtils;
 
 import java.util.ArrayList;
 
