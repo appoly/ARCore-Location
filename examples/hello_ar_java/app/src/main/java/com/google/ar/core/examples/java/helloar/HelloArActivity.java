@@ -58,6 +58,7 @@ import uk.co.appoly.arcorelocation.LocationScene;
 import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.rendering.AnnotationRenderer;
 import uk.co.appoly.arcorelocation.rendering.ImageRenderer;
+import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the
@@ -192,7 +193,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
 
         // ARCore requires camera permissions to operate. If we did not yet obtain runtime
         // permission on Android M and above, now is a good time to ask the user for it.
-        if (CameraPermissionHelper.hasCameraPermission(this)) {
+        if (ARLocationPermissionHelper.hasPermission(this)) {
             if (mSession != null) {
                 showLoadingMessage();
                 // Note that order matters - see the note in onPause(), the reverse applies here.
@@ -201,7 +202,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
             mSurfaceView.onResume();
             mDisplayRotationHelper.onResume();
         } else {
-            CameraPermissionHelper.requestCameraPermission(this);
+            ARLocationPermissionHelper.requestPermission(this);
         }
     }
 
@@ -221,12 +222,12 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+        if (!ARLocationPermissionHelper.hasPermission(this)) {
             Toast.makeText(this,
                 "Camera permission is needed to run this application", Toast.LENGTH_LONG).show();
-            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+            if (!ARLocationPermissionHelper.shouldShowRequestPermissionRationale(this)) {
                 // Permission denied with checking "Do not ask again".
-                CameraPermissionHelper.launchPermissionSettings(this);
+                ARLocationPermissionHelper.launchPermissionSettings(this);
             }
             finish();
         }
