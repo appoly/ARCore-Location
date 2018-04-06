@@ -5,14 +5,13 @@
 Built for the ARCore Android SDK.
 
 ## Example usage
-
 It's first required to set-up a basic ARCore project, such as [Google's Hello AR example](https://github.com/google-ar/arcore-android-sdk/tree/master/samples/hello_ar_java).
 
 ### Importing the library
-
 Add the JitPack repository to your build file
 
-Step 1. Add JitPack in your root build.gradle at the end of repositories:
+#### Step 1. 
+Add JitPack in your root build.gradle at the end of repositories:
 ```
 allprojects {
 	repositories {
@@ -22,7 +21,8 @@ allprojects {
 }
 ```
 
-Step 2. Add the ARCore-Location dependency. Replace `0.0.3` with the latest release from the releases tab on Github
+#### Step 2. 
+Add the ARCore-Location dependency. Replace `0.0.3` with the latest release from the releases tab on Github
 ```
 dependencies {
     compile 'com.github.appoly:ARCore-Location:0.0.3'
@@ -30,7 +30,6 @@ dependencies {
 ```
 
 ### Using the library
-
 We've included a couple of example renderers (to render something at a particular location). These are `AnnotationRenderer` and `ImageRenderer`. An example of adding a custom renderer is in /examples/hello_ar_example with `ObjectRenderer`.
 
 To implement this library into one of your AR projects, do the following.
@@ -43,7 +42,6 @@ private LocationScene locationScene;
 
 
 #### Step 2.
-
 Annotations linked to GPS coordinates can be added in the `onCreate` method.
 ```
 // Annotation at Buckingham Palace
