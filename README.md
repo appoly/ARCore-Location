@@ -94,5 +94,8 @@ This library requires permission to use the device Camera and Fine Location. You
 ### Support
 If you're having problems with the library, please [open a new issue](https://github.com/appoly/ARCore-Location/issues), and we'll aim to address it quickly.
 
+#### Known issues
+Mobile phone compasses only have an accuracy of about 15 degrees, even when calibrated. For most applications this is adequate, but when trying to superimpose markers over the real world it can be very problematic. This is a problem we haven’t resolved, and welcome your ideas on how best to do so!
+
 ### Contributing
 We'd love your help in making this library better. Pull requests with new features and bug fixes are welcome.
