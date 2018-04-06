@@ -1,14 +1,11 @@
 package uk.co.appoly.arcorelocation.sensor;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
 import uk.co.appoly.arcorelocation.LocationScene;
@@ -21,7 +18,7 @@ public class DeviceLocation implements LocationListener {
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public Location currentBestLocation;
-    private LocationManager locationManager ;
+    private LocationManager locationManager;
     private String provider;
 
     public DeviceLocation() {
@@ -50,7 +47,7 @@ public class DeviceLocation implements LocationListener {
                 Toast.makeText(LocationScene.mContext, "No Provider Found", Toast.LENGTH_SHORT).show();
             }
 
-        } catch(SecurityException e) {
+        } catch (SecurityException e) {
             Toast.makeText(LocationScene.mContext, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
         }
     }
@@ -58,6 +55,7 @@ public class DeviceLocation implements LocationListener {
     /**
      * Only replaces current location if this reading is
      * more likely to be accurate
+     *
      * @param location
      * @return
      */
@@ -112,14 +110,13 @@ public class DeviceLocation implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if(isBetterLocation(location)) {
+        if (isBetterLocation(location)) {
             currentBestLocation = location;
         }
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        permissionsCheck();
     }
 
     @Override
@@ -130,17 +127,5 @@ public class DeviceLocation implements LocationListener {
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
-    public void permissionsCheck() {
-        if (ActivityCompat.checkSelfPermission(
-                LocationScene.mContext,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                ) {
 
-            // Check Permissions Now
-            ActivityCompat.requestPermissions(
-                    LocationScene.mActivity,
-                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                    0);
-        }
-    }
 }

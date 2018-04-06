@@ -2,7 +2,6 @@ package uk.co.appoly.arcorelocation;
 
 import android.app.Activity;
 import android.content.Context;
-import android.opengl.Matrix;
 import android.os.Handler;
 
 import com.google.ar.core.Anchor;
@@ -62,7 +61,6 @@ public class LocationScene {
 
         deviceLocation = new DeviceLocation();
         deviceOrientation = new DeviceOrientation();
-
     }
 
     public void draw(Frame frame) {

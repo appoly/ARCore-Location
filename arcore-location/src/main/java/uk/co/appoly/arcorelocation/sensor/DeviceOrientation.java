@@ -81,5 +81,4 @@ public class DeviceOrientation implements SensorEventListener {
         mSensorManager.unregisterListener(this);
     }
 
-
 }
