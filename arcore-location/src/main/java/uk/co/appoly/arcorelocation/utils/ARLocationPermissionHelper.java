@@ -26,7 +26,7 @@ public final class ARLocationPermissionHelper {
     /**
      * Check to see we have the necessary permissions for this app, and ask for them if we don't.
      */
-    public static void requestCameraPermission(Activity activity) {
+    public static void requestPermission(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{CAMERA_PERMISSION, LOCATION_PERMISSION},
                 PERMISSION_CODE);
     }
