@@ -35,14 +35,14 @@ We've included a couple of example renderers (to render something at a particula
 
 To implement this library into one of your AR projects, do the following.
 
-Step 1. 
+#### Step 1. 
 Inside your AR Activity, you should create a new variable called `locationScene`, which will be the instance of this library.
 ```
 private LocationScene locationScene;
 ```
 
 
-Step 2.
+#### Step 2.
 
 Annotations linked to GPS coordinates can be added in the `onCreate` method.
 ```
@@ -71,10 +71,10 @@ locationScene.mLocationMarkers.add(
 );
 ```
 
-Step 3. 
+#### Step 3. 
 You must call `locationScene.resume();` within your Activity's `onResume()` method, and similarly call `locationScene.pause();` within your `onPause()` method.
 
-Step 4. 
+#### Step 4. 
 For the library to draw your annotations and images, you must add `locationScene.draw(frame);` to the `onDrawFrame(GL10 gl)` method as so:
 ```
 // Draw background.
@@ -83,3 +83,16 @@ mBackgroundRenderer.draw(frame);
 // Draw location markers
 locationScene.draw(frame);
 ```
+
+#### Permissions
+This library requires permission to use the device Camera and Fine Location. You should set this up in `AndroidManifest.xml`. If you're unfamiliar with requesting permissions, have a look at HelloArActivity in our example project.
+```
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```
+
+### Support
+If you're having problems with the library, please [open a new issue](https://github.com/appoly/ARCore-Location/issues), and we'll aim to address it quickly.
+
+### Contributing
+We'd love your help in making this library better. Pull requests with new features and bug fixes are welcome.
