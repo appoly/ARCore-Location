@@ -1,6 +1,6 @@
 # ARCoreLocation
 
-Allows items to be placed within the AR world using real-world coordinates.
+[Allows items to be placed within the AR world using real-world coordinates.](https://www.appoly.co.uk/arcore-location/)
 
 Built for the ARCore Android SDK.
 
