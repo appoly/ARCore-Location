@@ -29,10 +29,10 @@ public class AnnotationRenderer extends Renderer {
 
     private float[] QUAD_COORDS = new float[] {
             // x, y, z
-            -.4f, -.4f, 0.0f,
-            -.4f, +.4f, 0.0f,
-            +.4f, -.4f, 0.0f,
-            +.4f, +.4f, 0.0f,
+            -.7f, -.7f, 0.0f,
+            -.7f, +.7f, 0.0f,
+            +.7f, -.7f, 0.0f,
+            +.7f, +.7f, 0.0f,
     };
 
     private static final float[] QUAD_TEXCOORDS = new float[] {
@@ -170,7 +170,7 @@ public class AnnotationRenderer extends Renderer {
     public Bitmap drawTextToAnnotation(Context gContext,
                                    String gText, String gDistance) {
 
-        float shadow_size = 10f;
+        float shadow_size = 16f;
         int font_size = 120;
         int distance_font_size = 90;
         int line_stroke = 15;
@@ -190,7 +190,7 @@ public class AnnotationRenderer extends Renderer {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
         paint.setAntiAlias(true);
         paint.setColor(annotation_color);
-        paint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+        paint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
         paint.setTextSize(font_size);
         paint.setShadowLayer(shadow_size, 0f, 3f, shadow_color);
         Rect bounds = new Rect();
@@ -204,7 +204,7 @@ public class AnnotationRenderer extends Renderer {
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(annotation_color);
-        paint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+        paint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
         paint.setTextSize(distance_font_size);
         paint.setShadowLayer(shadow_size, 0f, 3f, Color.rgb(150,150,150));
         bounds = new Rect();

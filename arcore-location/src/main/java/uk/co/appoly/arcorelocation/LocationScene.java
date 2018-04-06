@@ -159,7 +159,9 @@ public class LocationScene {
                     markerBearing = markerBearing % 360;
 
                     double rotation = Math.floor(markerBearing);
-                    rotation = rotation * Math.PI / 180;
+
+                    if(deviceOrientation.pitch > 0)
+                        rotation = rotation * Math.PI / 180;
 
                     int renderDistance = markerDistance;
 
