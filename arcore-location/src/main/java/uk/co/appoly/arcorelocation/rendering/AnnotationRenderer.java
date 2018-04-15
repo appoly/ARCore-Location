@@ -58,7 +58,8 @@ public class AnnotationRenderer extends Renderer {
             + "   v_TexCoord = a_TexCoord;\n"
             + "}";
 
-    private static final String FRAGMENT_SHADER = "uniform sampler2D u_Texture;\n"
+    private static final String FRAGMENT_SHADER = "precision mediump float;\n"
+            + "uniform sampler2D u_Texture;\n"
             + "varying vec2 v_TexCoord;\n"
             + "\n"
             + "void main() {\n"
