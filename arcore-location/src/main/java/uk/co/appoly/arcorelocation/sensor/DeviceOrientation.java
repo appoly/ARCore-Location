@@ -39,8 +39,11 @@ public class DeviceOrientation implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         // Get the device heading
-        float degree = Math.round( event.values[0] );
-        currentDegree = -degree;
+        float degree = -Math.round( event.values[0] );
+
+        // Temporary fix until we can work out what's causing the anomalies
+        if(degree != 1.0 && degree != 0 && degree != 2.0 && degree != -1.0)
+            currentDegree = degree;
 
         switch (event.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
