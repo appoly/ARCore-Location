@@ -3,11 +3,13 @@ package uk.co.appoly.arcorelocation;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
+import com.google.ar.core.TrackingState;
 
 import java.util.ArrayList;
 
@@ -73,6 +75,15 @@ public class LocationScene {
 
         // Draw each anchor with it's individual renderer.
         drawMarkers(frame);
+
+        for(LocationMarker lm : mLocationMarkers) {
+            if(lm.anchor == null) {
+                anchorsNeedRefresh = true;
+            }
+        }
+
+        if(frame.getCamera().getTrackingState() != TrackingState.TRACKING)
+            anchorsNeedRefresh = true;
     }
 
     public void drawMarkers(Frame frame) {
