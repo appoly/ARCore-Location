@@ -19,6 +19,7 @@
     package="com.google.ar.core.examples.java.helloar">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
     <application
