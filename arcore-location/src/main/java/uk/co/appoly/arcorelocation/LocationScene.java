@@ -2,7 +2,9 @@ package uk.co.appoly.arcorelocation;
 
 import android.app.Activity;
 import android.content.Context;
+import android.opengl.Matrix;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.ar.core.Anchor;
@@ -66,6 +68,8 @@ public class LocationScene {
         deviceLocation = new DeviceLocation();
         deviceOrientation = new DeviceOrientation();
     }
+
+
 
     public void draw(Frame frame) {
 
@@ -137,6 +141,7 @@ public class LocationScene {
 
                 locationMarker.renderer.updateModelMatrix(mAnchorMatrix, scale);
                 locationMarker.renderer.draw(viewMatrix, projectionMatrix, lightIntensity);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -221,6 +226,8 @@ public class LocationScene {
             }
         }
     }
+
+
 
     public int getBearingAdjustment() {
         return bearingAdjustment;

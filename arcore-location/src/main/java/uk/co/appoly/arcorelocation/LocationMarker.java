@@ -24,4 +24,22 @@ public class LocationMarker {
         this.latitude = latitude;
         this.renderer = renderer;
     }
+
+    public void setOnTouchListener(Runnable touchEvent) {
+        this.touchEvent = touchEvent;
+    }
+
+    public Runnable getTouchEvent() {
+        return touchEvent;
+    }
+    private Runnable touchEvent;
+    private int touchableSize;
+
+    public int getTouchableSize() {
+        return touchableSize;
+    }
+
+    public void setTouchableSize(int touchableSize) {
+        this.touchableSize = touchableSize;
+    }
 }

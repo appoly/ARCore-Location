@@ -16,6 +16,7 @@
 
 package com.google.ar.core.examples.java.helloar;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -23,6 +24,7 @@ import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -38,12 +40,14 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.PointCloud;
 import com.google.ar.core.Session;
 import com.google.ar.core.Trackable;
-import com.google.ar.core.Trackable.TrackingState;
+import com.google.ar.core.TrackingState;
+import com.google.ar.core.examples.java.helloar.helpers.TapHelper;
 import com.google.ar.core.examples.java.helloar.rendering.BackgroundRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.ObjectRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.ObjectRenderer.BlendMode;
 import com.google.ar.core.examples.java.helloar.rendering.PlaneRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.PointCloudRenderer;
+import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
@@ -59,6 +63,7 @@ import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.rendering.AnnotationRenderer;
 import uk.co.appoly.arcorelocation.rendering.ImageRenderer;
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
+import uk.co.appoly.arcorelocation.utils.Utils2D;
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the
@@ -80,16 +85,18 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
 
     private final PlaneRenderer mPlaneRenderer = new PlaneRenderer();
     private final PointCloudRenderer mPointCloud = new PointCloudRenderer();
+    private TapHelper tapHelper;
 
     // Temporary matrix allocated here to reduce number of allocations for each frame.
     private final float[] mAnchorMatrix = new float[16];
 
     // Tap handling and UI.
-    private final ArrayBlockingQueue<MotionEvent> mQueuedSingleTaps = new ArrayBlockingQueue<>(16);
+    //private final ArrayBlockingQueue<MotionEvent> mQueuedSingleTaps = new ArrayBlockingQueue<>(16);
     private final ArrayList<Anchor> mAnchors = new ArrayList<>();
 
     private LocationScene locationScene;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +104,8 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         mSurfaceView = findViewById(R.id.surfaceview);
         mDisplayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
 
-
+        tapHelper = new TapHelper(/*context=*/ this);
+        mSurfaceView.setOnTouchListener(tapHelper);
 
         // Set up renderer.
         mSurfaceView.setPreserveEGLContextOnPause(true);
@@ -142,12 +150,21 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         locationScene = new LocationScene(this, this, mSession);
 
         // Image marker at Eiffel Tower
+        LocationMarker eiffelTower =  new LocationMarker(
+                2.2945,
+                48.858222,
+                new ImageRenderer("eiffel.jpg")
+        );
+        eiffelTower.setOnTouchListener(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(HelloArActivity.this,
+                        "Touched Eiffel Tower", Toast.LENGTH_SHORT).show();
+            }
+        });
+        eiffelTower.setTouchableSize(1000);
         locationScene.mLocationMarkers.add(
-                new LocationMarker(
-                        2.2945,
-                        48.858222,
-                        new ImageRenderer("eiffel.jpg")
-                )
+                eiffelTower
         );
 
         // Annotation at Buckingham Palace
@@ -155,7 +172,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
                 new LocationMarker(
                         -1.535823,
                         52.284501,
-                        new AnnotationRenderer("Train Station")));
+                        new AnnotationRenderer("Buckingham Palace")));
 
         // Example of using your own renderer.
         // Uses a slightly modified version of hello_ar_java's ObjectRenderer
@@ -166,38 +183,46 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
                         new ObjectRenderer("andy.obj", "andy.png")));
 
 
-        // Correct heading with touching side of screen
-        mSurfaceView.setOnTouchListener(
-            new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent e) {
 
-                    if(e.getX() < mSurfaceView.getWidth() / 2) {
-                        locationScene.setBearingAdjustment( locationScene.getBearingAdjustment() - 1 );
-                    } else {
-                        locationScene.setBearingAdjustment( locationScene.getBearingAdjustment() + 1 );
+        // Correct heading with touching side of screen
+        /*mSurfaceView.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent e) {
+
+
+                        if(e.getX() < mSurfaceView.getWidth() / 2) {
+                            locationScene.setBearingAdjustment( locationScene.getBearingAdjustment() - 1 );
+                        } else {
+                            locationScene.setBearingAdjustment( locationScene.getBearingAdjustment() + 1 );
+                        }
+                        Toast.makeText(HelloArActivity.this.findViewById(android.R.id.content).getContext(),
+                                "Bearing adjustment: " + locationScene.getBearingAdjustment(), Toast.LENGTH_SHORT).show();
+                        return true;
                     }
-                    Toast.makeText(HelloArActivity.this.findViewById(android.R.id.content).getContext(),
-                            "Bearing adjustment: " + locationScene.getBearingAdjustment(), Toast.LENGTH_SHORT).show();
-                    return true;
                 }
-            }
         );
+        */
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        locationScene.resume();
 
         // ARCore requires camera permissions to operate. If we did not yet obtain runtime
         // permission on Android M and above, now is a good time to ask the user for it.
         if (ARLocationPermissionHelper.hasPermission(this)) {
+            if(locationScene != null)
+                locationScene.resume();
             if (mSession != null) {
                 showLoadingMessage();
                 // Note that order matters - see the note in onPause(), the reverse applies here.
-                mSession.resume();
+                try {
+                    mSession.resume();
+                } catch (CameraNotAvailableException e) {
+                    e.printStackTrace();
+                }
             }
             mSurfaceView.onResume();
             mDisplayRotationHelper.onResume();
@@ -209,7 +234,8 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
     @Override
     public void onPause() {
         super.onPause();
-        locationScene.pause();
+        if(locationScene != null)
+            locationScene.pause();
         // Note that the order matters - GLSurfaceView is paused first so that it does not try
         // to query the session. If Session is paused before GLSurfaceView, GLSurfaceView may
         // still call mSession.update() and get a SessionPausedException.
@@ -249,10 +275,10 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         }
     }
 
-    private void onSingleTap(MotionEvent e) {
+   /* private void onSingleTap(MotionEvent e) {
         // Queue tap if there is space. Tap is lost if queue is full.
         mQueuedSingleTaps.offer(e);
-    }
+    }*/
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -312,28 +338,10 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
 
             // Handle taps. Handling only one tap per frame, as taps are usually low frequency
             // compared to frame rate.
-            MotionEvent tap = mQueuedSingleTaps.poll();
+            MotionEvent tap = tapHelper.poll();
             if (tap != null && camera.getTrackingState() == TrackingState.TRACKING) {
-                for (HitResult hit : frame.hitTest(tap)) {
-                    // Check if any plane was hit, and if it was hit inside the plane polygon
-                    Trackable trackable = hit.getTrackable();
-                    if (trackable instanceof Plane
-                            && ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
-                        // Cap the number of objects created. This avoids overloading both the
-                        // rendering system and ARCore.
-                        if (mAnchors.size() >= 20) {
-                            mAnchors.get(0).detach();
-                            mAnchors.remove(0);
-                        }
-                        // Adding an Anchor tells ARCore that it should track this position in
-                        // space. This anchor is created on the Plane to place the 3d model
-                        // in the correct position relative both to the world and to the plane.
-                        mAnchors.add(hit.createAnchor());
-
-                        // Hits are sorted by depth. Consider only closest hit on a plane.
-                        break;
-                    }
-                }
+                Log.i(TAG, "HITTEST: Got a tap and tracking");
+                Utils2D.handleTap(this, locationScene, frame, tap);
             }
 
             // Draw background.
