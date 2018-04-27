@@ -1,3 +1,5 @@
+![Example Annotation](http://smegaupload.co.uk/up/uploads/arcorelocationbanner1524843962.png "ARCore location gps")
+
 # ARCoreLocation
 
 [Allows items to be placed within the AR world using real-world coordinates.](https://www.appoly.co.uk/arcore-location/)
@@ -60,8 +62,6 @@ buckinghamPalace.setOnTouchListener(new Runnable() {
 });
 locationScene.mLocationMarkers.add(buckinghamPalace);
 ```
-
-![Example Annotation](http://smegaupload.co.uk/up/uploads/2969296910211017563386210713327558o%2011522240834.png "Example Annotation")
 
 
 Images can similarly be added like so
