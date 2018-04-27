@@ -22,10 +22,10 @@ allprojects {
 ```
 
 #### Step 2. 
-Add the ARCore-Location dependency. Replace `0.0.9` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
+Add the ARCore-Location dependency. Replace `0.1.0` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
 ```
 dependencies {
-    compile 'com.github.appoly:ARCore-Location:0.0.9'
+    compile 'com.github.appoly:ARCore-Location:0.1.0'
 }
 ```
 
@@ -45,13 +45,20 @@ private LocationScene locationScene;
 Annotations linked to GPS coordinates can be added in the `onCreate` method.
 ```
 // Annotation at Buckingham Palace
-locationScene.mLocationMarkers.add(
-    new LocationMarker(
-        0.1419,
-        51.5014,
-        new AnnotationRenderer("Buckingham Palace")
-    )
+// Shows toast on touch
+LocationMarker buckinghamPalace =  new LocationMarker(
+    0.1419,
+    51.5014,
+    new AnnotationRenderer("Buckingham Palace")
 );
+buckinghamPalace.setOnTouchListener(new Runnable() {
+    @Override
+    public void run() {
+        Toast.makeText(HelloArActivity.this,
+                "Touched Buckingham Palace", Toast.LENGTH_SHORT).show();
+    }
+});
+locationScene.mLocationMarkers.add(buckinghamPalace);
 ```
 
 ![Example Annotation](http://smegaupload.co.uk/up/uploads/2969296910211017563386210713327558o%2011522240834.png "Example Annotation")
