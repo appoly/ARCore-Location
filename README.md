@@ -42,6 +42,10 @@ Inside your AR Activity, you should create a new variable called `locationScene`
 private LocationScene locationScene;
 ```
 
+This should be instantiated as your app starts with
+```
+locationScene = new LocationScene(this, this, session);
+```
 
 #### Step 2.
 Annotations linked to GPS coordinates can be added in the `onCreate` method.
