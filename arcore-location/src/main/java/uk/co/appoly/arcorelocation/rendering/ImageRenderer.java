@@ -89,6 +89,7 @@ public class ImageRenderer extends Renderer {
         Bitmap textureBitmap = null;
         try {
             textureBitmap = BitmapFactory.decodeStream(context.getAssets().open(pngName));
+            textureBitmap.setHasAlpha(true);
 
             // Adjusts size of 3D shape to keep image aspect correct
             float adjustedWidth = ((float)textureBitmap.getWidth() / 250) / 2;
@@ -111,6 +112,11 @@ public class ImageRenderer extends Renderer {
 
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+
+        // Transparency
+        GLES20.glBlendColor(0,0,0,0);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 
@@ -208,8 +214,15 @@ public class ImageRenderer extends Renderer {
         // Attach the object texture.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
+
+        // enable transparency
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glBlendColor(0,0,0,0);
+
         GLES20.glUniform1i(mTextureUniform, 0);
         GLES20.glUniformMatrix4fv(mModelViewProjectionUniform, 1, false, mModelViewProjectionMatrix, 0);
+
         // Set the vertex positions.
         GLES20.glVertexAttribPointer(
                 mQuadPositionParam, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, mQuadVertices);

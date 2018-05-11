@@ -153,7 +153,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
         LocationMarker eiffelTower =  new LocationMarker(
                 2.2945,
                 48.858222,
-                new ImageRenderer("eiffel.jpg")
+                new ImageRenderer("eiffel.png")
         );
         eiffelTower.setOnTouchListener(new Runnable() {
             @Override

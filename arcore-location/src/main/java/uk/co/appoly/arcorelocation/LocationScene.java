@@ -2,10 +2,7 @@ package uk.co.appoly.arcorelocation;
 
 import android.app.Activity;
 import android.content.Context;
-import android.opengl.Matrix;
 import android.os.Handler;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
