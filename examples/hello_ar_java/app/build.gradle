@@ -28,7 +28,7 @@ dependencies {
     implementation 'de.javagl:obj:0.2.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.github.appoly:ARCore-Location:0.2.0'
+    implementation 'com.github.appoly:ARCore-Location:0.2.1'
 
     //implementation 'uk.co.appoly.arcorelocation:arcore-location-debug@aar'
 }

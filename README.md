@@ -24,10 +24,10 @@ allprojects {
 ```
 
 #### Step 2. 
-Add the ARCore-Location dependency. Replace `0.2.0` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
+Add the ARCore-Location dependency. Replace `0.2.1` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
 ```
 dependencies {
-    compile 'com.github.appoly:ARCore-Location:0.2.0'
+    compile 'com.github.appoly:ARCore-Location:0.2.1'
 }
 ```
 
