@@ -6,7 +6,7 @@
 
 Built for the ARCore Android SDK.
 
-Version 1.*.* is now for SceneForm projects, and will not be compatible with old versions of ARCore.
+Version 1.x is now for SceneForm projects, and will not be compatible with old versions of ARCore.
 If you are still using the older version of ARCore, change branch to "legacy". Note that legacy will not recieve frequent updates.
 
 
