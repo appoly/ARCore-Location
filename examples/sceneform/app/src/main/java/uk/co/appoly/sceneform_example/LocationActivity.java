@@ -44,6 +44,7 @@ import java.util.concurrent.ExecutionException;
 
 import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.LocationScene;
+import uk.co.appoly.arcorelocation.rendering.LocationNode;
 import uk.co.appoly.arcorelocation.rendering.LocationNodeRender;
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
 
@@ -130,10 +131,10 @@ public class LocationActivity extends AppCompatActivity {
 
                                 layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
                                     @Override
-                                    public void render(int distance) {
+                                    public void render(LocationNode node) {
                                         View eView = exampleLayoutRenderable.getView();
                                         TextView distanceTextView = eView.findViewById(R.id.textView2);
-                                        distanceTextView.setText(distance + "M");
+                                        distanceTextView.setText(node.getDistance() + "M");
                                     }
                                 });
 

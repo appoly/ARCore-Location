@@ -73,6 +73,7 @@ public class LocationScene {
 
         deviceLocation = new DeviceLocation();
         deviceOrientation = new DeviceOrientation();
+        deviceOrientation.resume();
     }
 
     public void processFrame(Frame frame) {

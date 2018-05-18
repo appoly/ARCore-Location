@@ -1,7 +1,5 @@
 package uk.co.appoly.arcorelocation.rendering;
 
-import android.util.Log;
-
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
@@ -16,10 +14,21 @@ import uk.co.appoly.arcorelocation.utils.LocationUtils;
 public class LocationNode extends AnchorNode {
 
     LocationMarker locationMarker;
+    private LocationNodeRender renderEvent;
+    private int distance;
+    private float scaleModifier = 1F;
 
     public LocationNode(Anchor anchor, LocationMarker locationMarker) {
         super(anchor);
         this.locationMarker = locationMarker;
+    }
+
+    public float getScaleModifier() {
+        return scaleModifier;
+    }
+
+    public void setScaleModifier(float scaleModifier) {
+        this.scaleModifier = scaleModifier;
     }
 
     public LocationNodeRender getRenderEvent() {
@@ -30,7 +39,13 @@ public class LocationNode extends AnchorNode {
         this.renderEvent = renderEvent;
     }
 
-    private LocationNodeRender renderEvent;
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 
     @Override
     public void onUpdate(FrameTime frameTime) {
@@ -40,7 +55,6 @@ public class LocationNode extends AnchorNode {
         // However, if onUpdate is called explicitly or if the node is removed from the scene on a
         // different thread during onUpdate, then getScene may be null.
 
-        Log.i("LocationNode", "Marker update called...");
 
         for (Node n : getChildren()) {
             if (getScene() == null) {
@@ -70,6 +84,7 @@ public class LocationNode extends AnchorNode {
             if (markerDistance > 3000)
                 scale *= 0.75F;
 
+            scale *= scaleModifier;
 
             Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
             Vector3 cardPosition = n.getWorldPosition();
@@ -81,8 +96,8 @@ public class LocationNode extends AnchorNode {
             //locationMarker.node.setWorldScale(new Vector3(scale, scale, scale));
             n.setWorldScale(new Vector3(scale, scale, scale));
 
-            if(renderEvent != null) {
-                renderEvent.render(markerDistance);
+            if (renderEvent != null) {
+                renderEvent.render(this);
             }
 
         }
