@@ -1,7 +1,10 @@
 package uk.co.appoly.arcorelocation;
 
-import com.google.ar.core.Anchor;
-import uk.co.appoly.arcorelocation.rendering.Renderer;
+import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.Node;
+
+import uk.co.appoly.arcorelocation.rendering.LocationNode;
+import uk.co.appoly.arcorelocation.rendering.LocationNodeRender;
 
 /**
  * Created by John on 02/03/2018.
@@ -14,32 +17,25 @@ public class LocationMarker {
     public double latitude;
 
     // Location in AR terms
-    public Anchor anchor;
+    public LocationNode anchorNode;
 
-    //Renderer
-    public Renderer renderer;
+    // Node to render
+    public Node node;
 
-    public LocationMarker(double longitude, double latitude, Renderer renderer) {
+    public LocationNodeRender getRenderEvent() {
+        return renderEvent;
+    }
+
+    public void setRenderEvent(LocationNodeRender renderEvent) {
+        this.renderEvent = renderEvent;
+    }
+
+    private LocationNodeRender renderEvent;
+
+    public LocationMarker(double longitude, double latitude, Node node) {
         this.longitude = longitude;
         this.latitude = latitude;
-        this.renderer = renderer;
+        this.node = node;
     }
 
-    public void setOnTouchListener(Runnable touchEvent) {
-        this.touchEvent = touchEvent;
-    }
-
-    public Runnable getTouchEvent() {
-        return touchEvent;
-    }
-    private Runnable touchEvent;
-    private int touchableSize;
-
-    public int getTouchableSize() {
-        return touchableSize;
-    }
-
-    public void setTouchableSize(int touchableSize) {
-        this.touchableSize = touchableSize;
-    }
 }

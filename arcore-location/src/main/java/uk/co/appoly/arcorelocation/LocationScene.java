@@ -3,15 +3,23 @@ package uk.co.appoly.arcorelocation;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
+import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.Scene;
+import com.google.ar.sceneform.SceneView;
+import com.google.ar.sceneform.math.Quaternion;
+import com.google.ar.sceneform.math.Vector3;
 
 import java.util.ArrayList;
 
+import uk.co.appoly.arcorelocation.rendering.LocationNode;
 import uk.co.appoly.arcorelocation.sensor.DeviceLocation;
 import uk.co.appoly.arcorelocation.sensor.DeviceOrientation;
 import uk.co.appoly.arcorelocation.utils.LocationUtils;
@@ -24,20 +32,19 @@ public class LocationScene {
 
     // Anchors are currently re-drawn on an interval. There are likely better
     // ways of doing this, however it's sufficient for now.
-    private final static int ANCHOR_REFRESH_INTERVAL = 1000 * 8; // 8 seconds
+    private final static int ANCHOR_REFRESH_INTERVAL = 1000 * 5; // 5 seconds
     public static Context mContext;
     public static Activity mActivity;
+    public static ArSceneView mArSceneView;
 
-    // Temporary matrix allocated here to reduce number of allocations for each frame.
-    private final float[] mAnchorMatrix = new float[16];
     public ArrayList<LocationMarker> mLocationMarkers = new ArrayList<>();
 
-    public DeviceLocation deviceLocation;
-    public DeviceOrientation deviceOrientation;
+    public static DeviceLocation deviceLocation;
+    public static DeviceOrientation deviceOrientation;
 
     // Limit of where to draw markers within AR scene.
     // They will auto scale, but this helps prevents rendering issues
-    private int distanceLimit = 50;
+    public static int distanceLimit = 20;
 
     // Bearing adjustment. Can be set to calibrate with true north
     private int bearingAdjustment = 0;
@@ -55,10 +62,12 @@ public class LocationScene {
     };
     private Session mSession;
 
-    public LocationScene(Context mContext, Activity mActivity, Session mSession) {
+    public LocationScene(Context mContext, Activity mActivity, ArSceneView mArSceneView) {
+        Log.i(TAG, "Location Scene initiated.");
         this.mContext = mContext;
         this.mActivity = mActivity;
-        this.mSession = mSession;
+        this.mSession = mArSceneView.getSession();
+        this.mArSceneView = mArSceneView;
 
         startCalculationTask();
 
@@ -66,84 +75,8 @@ public class LocationScene {
         deviceOrientation = new DeviceOrientation();
     }
 
-
-
-    public void draw(Frame frame) {
-
-        // Refresh the anchors in the scene.
-        // Needs to occur in the draw method, as we need details about the camera
+    public void processFrame(Frame frame) {
         refreshAnchorsIfRequired(frame);
-
-        // Draw each anchor with it's individual renderer.
-        drawMarkers(frame);
-
-        for(LocationMarker lm : mLocationMarkers) {
-            if(lm.anchor == null) {
-                anchorsNeedRefresh = true;
-            }
-        }
-
-        if(frame.getCamera().getTrackingState() != TrackingState.TRACKING)
-            anchorsNeedRefresh = true;
-    }
-
-    public void drawMarkers(Frame frame) {
-        for (LocationMarker locationMarker : mLocationMarkers) {
-
-            try {
-                // Get the current pose of an Anchor in world space. The Anchor pose is updated
-                // during calls to session.update() as ARCore refines its estimate of the world.
-
-                float translation[] = new float[3];
-                float rotation[] = new float[4];
-                locationMarker.anchor.getPose().getTranslation(translation, 0);
-                frame.getCamera().getPose().getRotationQuaternion(rotation, 0);
-
-                Pose rotatedPose = new Pose(translation, rotation);
-                rotatedPose.toMatrix(mAnchorMatrix, 0);
-
-                int markerDistance = (int) Math.ceil(
-                        LocationUtils.distance(
-                                locationMarker.latitude,
-                                deviceLocation.currentBestLocation.getLatitude(),
-                                locationMarker.longitude,
-                                deviceLocation.currentBestLocation.getLongitude(),
-                                0,
-                                0)
-                );
-
-                // Limit the distance of the Anchor within the scene.
-                // Prevents uk.co.appoly.arcorelocation.rendering issues.
-                int renderDistance = markerDistance;
-                if (renderDistance > distanceLimit)
-                    renderDistance = distanceLimit;
-
-
-                float[] projectionMatrix = new float[16];
-                frame.getCamera().getProjectionMatrix(projectionMatrix, 0, 0.1f, 100.0f);
-
-                // Get camera matrix and draw.
-                float[] viewMatrix = new float[16];
-                frame.getCamera().getViewMatrix(viewMatrix, 0);
-
-                // Make sure marker stays the same size on screen, no matter the distance
-                float scale = 3.0F / 10.0F * (float) renderDistance;
-
-                // Distant markers a little smaller
-                if (markerDistance > 3000)
-                    scale *= 0.75F;
-
-                // Compute lighting from average intensity of the image.
-                final float lightIntensity = frame.getLightEstimate().getPixelIntensity();
-
-                locationMarker.renderer.updateModelMatrix(mAnchorMatrix, scale);
-                locationMarker.renderer.draw(viewMatrix, projectionMatrix, lightIntensity);
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void refreshAnchorsIfRequired(Frame frame) {
@@ -190,13 +123,14 @@ public class LocationScene {
                         renderDistance = distanceLimit;
 
                     // Adjustment to add markers on horizon, instead of just directly in front of camera
-                    double heightAdjustment = Math.round(renderDistance * (Math.tan(Math.toRadians(deviceOrientation.pitch))));
+                    double heightAdjustment = 0;
+                    // Math.round(renderDistance * (Math.tan(Math.toRadians(deviceOrientation.pitch)))) - 1.5F;
 
                     // Raise distant markers for better illusion of distance
                     // Hacky - but it works as a temporary measure
                     int cappedRealDistance = markerDistance > 500 ? 500 : markerDistance;
                     if (renderDistance != markerDistance)
-                        heightAdjustment += 0.01F * (cappedRealDistance - renderDistance);
+                        heightAdjustment += 0.005F * (cappedRealDistance - renderDistance);
 
                     float x = 0;
                     float z = -renderDistance;
@@ -212,9 +146,13 @@ public class LocationScene {
                             frame.getCamera().getPose()
                                     .compose(Pose.makeTranslation(xRotated, y + (float) heightAdjustment, zRotated)));
 
-                    mLocationMarkers.get(i).anchor = newAnchor;
+                    mLocationMarkers.get(i).anchorNode = new LocationNode(newAnchor, mLocationMarkers.get(i));
+                    mLocationMarkers.get(i).anchorNode.setParent(mArSceneView.getScene());
+                    mLocationMarkers.get(i).anchorNode.addChild(mLocationMarkers.get(i).node);
 
-                    mLocationMarkers.get(i).renderer.createOnGlThread(mContext, markerDistance);
+                    if(mLocationMarkers.get(i).getRenderEvent() != null) {
+                        mLocationMarkers.get(i).anchorNode.setRenderEvent(mLocationMarkers.get(i).getRenderEvent());
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -223,7 +161,6 @@ public class LocationScene {
             }
         }
     }
-
 
 
     public int getBearingAdjustment() {

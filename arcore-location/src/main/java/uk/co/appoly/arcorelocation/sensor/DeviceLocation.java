@@ -19,7 +19,6 @@ public class DeviceLocation implements LocationListener {
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public Location currentBestLocation;
     private LocationManager locationManager;
-    private String provider;
 
     public DeviceLocation() {
 
@@ -27,25 +26,18 @@ public class DeviceLocation implements LocationListener {
             // Getting LocationManager object
             locationManager = (LocationManager) LocationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
             // Creating an empty criteria object
-            Criteria criteria = new Criteria();
 
-            // Getting the name of the provider that meets the criteria
-            provider = locationManager.getBestProvider(criteria, false);
-
-            if (provider != null && !provider.equals("")) {
 
                 // Get the location from the given provider
-                Location location = locationManager.getLastKnownLocation(provider);
-                locationManager.requestLocationUpdates(provider, 1000, 1, this);
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
 
                 if (location != null)
                     onLocationChanged(location);
-                else
-                    Toast.makeText(LocationScene.mContext, "Location can't be retrieved", Toast.LENGTH_SHORT).show();
+                // Don't need this, as location may take a few seconds to come in
+                //else
+                //    Toast.makeText(LocationScene.mContext, "Location can't be retrieved", Toast.LENGTH_SHORT).show();
 
-            } else {
-                Toast.makeText(LocationScene.mContext, "No Provider Found", Toast.LENGTH_SHORT).show();
-            }
 
         } catch (SecurityException e) {
             Toast.makeText(LocationScene.mContext, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
@@ -121,6 +113,11 @@ public class DeviceLocation implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
+        try {
+            locationManager.requestLocationUpdates(provider, 0, 0, this);
+        } catch(SecurityException e) {
+
+        }
     }
 
     @Override

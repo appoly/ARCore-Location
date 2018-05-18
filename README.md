@@ -6,8 +6,12 @@
 
 Built for the ARCore Android SDK.
 
+Version 1.*.* is now for SceneForm projects, and will not be compatible with old versions of ARCore.
+If you are still using the older version of ARCore, change branch to "legacy". Note that legacy will not recieve frequent updates.
+
+
 ## Example usage
-It's first required to set-up a basic ARCore project, such as [Google's Hello AR example](https://github.com/google-ar/arcore-android-sdk/tree/master/samples/hello_ar_java).
+It's first required to set-up a basic ARCore sceneform project, or you can use our example.
 
 ### Importing the library
 Add the JitPack repository to your build file
@@ -24,16 +28,16 @@ allprojects {
 ```
 
 #### Step 2. 
-Add the ARCore-Location dependency. Replace `0.2.1` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
+Add the ARCore-Location dependency. Replace `1.0.0` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
 ```
 dependencies {
-    compile 'com.github.appoly:ARCore-Location:0.2.1'
+    compile 'com.github.appoly:ARCore-Location:1.0.0'
 }
 ```
 
 ### Using the library
-We've included a couple of example renderers (to render something at a particular location). These are `AnnotationRenderer` and `ImageRenderer`. An example of adding a custom renderer is in /examples/hello_ar_example with `ObjectRenderer`.
 
+It's highly reccomended to use the example project as a reference.
 To implement this library into one of your AR projects, do the following.
 
 #### Step 1. 
@@ -42,56 +46,49 @@ Inside your AR Activity, you should create a new variable called `locationScene`
 private LocationScene locationScene;
 ```
 
-This should be instantiated as your app starts with
-```
-locationScene = new LocationScene(this, this, session);
-```
 
 #### Step 2.
-Annotations linked to GPS coordinates can be added in the `onCreate` method.
+Both your LocationScene, and various objects should be instantiated in your onCreate method. Assuming you already have a arSceneView - the LocationScene and LocationMarkers can be set-up in the update listener.
 ```
-// Annotation at Buckingham Palace
-// Shows toast on touch
-LocationMarker buckinghamPalace =  new LocationMarker(
-    0.1419,
-    51.5014,
-    new AnnotationRenderer("Buckingham Palace")
-);
-buckinghamPalace.setOnTouchListener(new Runnable() {
-    @Override
-    public void run() {
-        Toast.makeText(HelloArActivity.this,
-                "Touched Buckingham Palace", Toast.LENGTH_SHORT).show();
+arSceneView
+.getScene()
+.setOnUpdateListener(
+frameTime -> {
+
+    if (locationScene == null) {
+        locationScene = new LocationScene(this, this, arSceneView);
+        locationScene.mLocationMarkers.add(
+                new LocationMarker(
+                        -0.119677,
+                        51.478494,
+                        getAndy()));
     }
+
+    ....
+
+    if (locationScene != null) {
+        locationScene.processFrame(frame);
+    }
+
 });
-locationScene.mLocationMarkers.add(buckinghamPalace);
 ```
 
+Where `getAndy()` is the following (also showing a onTapListener):
 
-Images can similarly be added like so
 ```
-// Image marker at Eiffel Tower
-locationScene.mLocationMarkers.add(
-    new LocationMarker(
-        2.2945,
-        48.858222,
-        new ImageRenderer("eiffel.jpg")
-    )
-);
+private Node getAndy() {
+    Node base = new Node();
+    base.setRenderable(andyRenderable);
+    Context c = this;
+    base.setOnTapListener((v, event) -> {
+        Toast.makeText(
+                c, "Andy touched.", Toast.LENGTH_LONG)
+                .show();
+    });
+    return base;
+}
 ```
 
-#### Step 3. 
-You must call `locationScene.resume();` within your Activity's `onResume()` method, and similarly call `locationScene.pause();` within your `onPause()` method.
-
-#### Step 4. 
-For the library to draw your annotations and images, you must add `locationScene.draw(frame);` to the `onDrawFrame(GL10 gl)` method as so:
-```
-// Draw background.
-mBackgroundRenderer.draw(frame);
-
-// Draw location markers
-locationScene.draw(frame);
-```
 
 #### Permissions
 This library requires permission to use the device Camera and Fine Location. You should set this up in `AndroidManifest.xml`. If you're unfamiliar with requesting permissions, have a look at HelloArActivity in our example project.
@@ -99,6 +96,9 @@ This library requires permission to use the device Camera and Fine Location. You
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
+
+The library provides `ARLocationPermissionHelper` - which is similar to the PermissionHelper used in Google's example projects, and provides a range of functions to correctly aquire the necessary permissions. Please see the example project for guiadance.
+
 
 ### Support
 If you're having problems with the library, please [open a new issue](https://github.com/appoly/ARCore-Location/issues), and we'll aim to address it quickly.
