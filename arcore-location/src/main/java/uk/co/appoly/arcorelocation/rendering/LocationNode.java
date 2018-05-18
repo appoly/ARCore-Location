@@ -71,6 +71,8 @@ public class LocationNode extends AnchorNode {
                             0)
             );
 
+            setDistance(markerDistance);
+
             // Limit the distance of the Anchor within the scene.
             // Prevents uk.co.appoly.arcorelocation.rendering issues.
             int renderDistance = markerDistance;
