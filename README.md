@@ -46,9 +46,36 @@ Inside your AR Activity, you should create a new variable called `locationScene`
 private LocationScene locationScene;
 ```
 
-
 #### Step 2.
-Both your LocationScene, and various objects should be instantiated in your onCreate method. Assuming you already have a arSceneView - the LocationScene and LocationMarkers can be set-up in the update listener.
+
+Set up your renderables in onCreate
+```
+CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
+        .setSource(this, R.raw.andy)
+        .build();
+
+
+CompletableFuture.allOf(andy)
+        .handle(
+                (notUsed, throwable) -> 
+                {
+                    if (throwable != null) {
+                        DemoUtils.displayError(this, "Unable to load renderables", throwable);
+                        return null;
+                    }
+
+                    try {
+                        andyRenderable = andy.get();
+
+                    } catch (InterruptedException | ExecutionException ex) {
+                        DemoUtils.displayError(this, "Unable to load renderables", ex);
+                    }
+                    return null;
+                });
+```
+
+#### Step 3.
+Both your LocationScene, and various location markers should be instantiated in your onCreate method. Assuming you already have a arSceneView - the LocationScene and LocationMarkers can be set-up in the update listener.
 ```
 arSceneView
 .getScene()
