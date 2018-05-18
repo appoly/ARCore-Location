@@ -55,7 +55,8 @@ dependencies {
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.0.0"
     implementation "com.android.support:appcompat-v7:27.1.0"
     implementation "com.android.support:design:27.1.0"
-    implementation 'uk.co.appoly.arcorelocation:arcore-location-debug@aar'
+    //implementation 'uk.co.appoly.arcorelocation:arcore-location-debug@aar'
+    implementation 'com.github.appoly:ARCore-Location:1.0.0'
 }
 
 repositories {
@@ -67,56 +68,3 @@ repositories {
 
 
 apply plugin: 'com.google.ar.sceneform.plugin'
-
-/*
-sceneform.asset('sampledata/models/Earth/Earth.gltf',
-        'default',
-        'sampledata/models/Earth/Earth.sfa',
-        'src/main/assets/Earth')
-
-sceneform.asset('sampledata/models/Jupiter/Jupiter.gltf',
-        'default',
-        'sampledata/models/Jupiter/Jupiter.sfa',
-        'src/main/assets/Jupiter')
-
-sceneform.asset('sampledata/models/Luna/Luna.gltf',
-        'default',
-        'sampledata/models/Luna/Luna.sfa',
-        'src/main/assets/Luna')
-
-sceneform.asset('sampledata/models/Mars/Mars.gltf',
-        'default',
-        'sampledata/models/Mars/Mars.sfa',
-        'src/main/assets/Mars')
-
-sceneform.asset('sampledata/models/Mercury/Mercury.gltf',
-        'default',
-        'sampledata/models/Mercury/Mercury.sfa',
-        'src/main/assets/Mercury')
-
-sceneform.asset('sampledata/models/Neptune/Neptune.gltf',
-        'default',
-        'sampledata/models/Neptune/Neptune.sfa',
-        'src/main/assets/Neptune')
-
-sceneform.asset('sampledata/models/Saturn/Saturn.gltf',
-        'default',
-        'sampledata/models/Saturn/Saturn.sfa',
-        'src/main/assets/Saturn')
-
-sceneform.asset('sampledata/models/Sol/Sol.gltf',
-        'default',
-        'sampledata/models/Sol/Sol.sfa',
-        'src/main/assets/Sol')
-
-
-sceneform.asset('sampledata/models/Uranus/Uranus.gltf',
-        'default',
-        'sampledata/models/Uranus/Uranus.sfa',
-        'src/main/assets/Uranus')
-
-sceneform.asset('sampledata/models/Venus/Venus.gltf',
-        'default',
-        'sampledata/models/Venus/Venus.sfa',
-        'src/main/assets/Venus')
-*/
