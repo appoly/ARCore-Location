@@ -56,7 +56,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:27.1.0"
     implementation "com.android.support:design:27.1.0"
     //implementation 'uk.co.appoly.arcorelocation:arcore-location-debug@aar'
-    implementation 'com.github.appoly:ARCore-Location:1.0.1'
+    implementation 'com.github.appoly:ARCore-Location:1.0.2'
 }
 
 repositories {
