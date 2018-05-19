@@ -19,12 +19,14 @@ public class DeviceLocation implements LocationListener {
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public Location currentBestLocation;
     private LocationManager locationManager;
+    private LocationScene locationScene;
 
-    public DeviceLocation() {
+    public DeviceLocation(LocationScene locationScene) {
+        this.locationScene = locationScene;
 
         try {
             // Getting LocationManager object
-            locationManager = (LocationManager) LocationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) locationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
             // Creating an empty criteria object
 
 
@@ -40,7 +42,7 @@ public class DeviceLocation implements LocationListener {
 
 
         } catch (SecurityException e) {
-            Toast.makeText(LocationScene.mContext, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
+            Toast.makeText(locationScene.mContext, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
         }
     }
 

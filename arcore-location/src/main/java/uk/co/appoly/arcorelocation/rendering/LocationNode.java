@@ -1,5 +1,7 @@
 package uk.co.appoly.arcorelocation.rendering;
 
+import android.util.Log;
+
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
@@ -13,14 +15,28 @@ import uk.co.appoly.arcorelocation.utils.LocationUtils;
 
 public class LocationNode extends AnchorNode {
 
-    LocationMarker locationMarker;
+    private String TAG = "LocationNode";
+
+    private LocationMarker locationMarker;
     private LocationNodeRender renderEvent;
     private int distance;
     private float scaleModifier = 1F;
+    private float height = 0F;
+    private boolean scaleAtDistance = true;
+    private LocationScene locationScene;
 
-    public LocationNode(Anchor anchor, LocationMarker locationMarker) {
+    public LocationNode(Anchor anchor, LocationMarker locationMarker, LocationScene locationScene) {
         super(anchor);
         this.locationMarker = locationMarker;
+        this.locationScene = locationScene;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     public float getScaleModifier() {
@@ -47,6 +63,14 @@ public class LocationNode extends AnchorNode {
         this.distance = distance;
     }
 
+    public boolean shouldScaleAtDistance() {
+        return scaleAtDistance;
+    }
+
+    public void setScaleAtDistance(boolean scaleAtDistance) {
+        this.scaleAtDistance = scaleAtDistance;
+    }
+
     @Override
     public void onUpdate(FrameTime frameTime) {
 
@@ -64,9 +88,9 @@ public class LocationNode extends AnchorNode {
             int markerDistance = (int) Math.ceil(
                     LocationUtils.distance(
                             locationMarker.latitude,
-                            LocationScene.deviceLocation.currentBestLocation.getLatitude(),
+                            locationScene.deviceLocation.currentBestLocation.getLatitude(),
                             locationMarker.longitude,
-                            LocationScene.deviceLocation.currentBestLocation.getLongitude(),
+                            locationScene.deviceLocation.currentBestLocation.getLongitude(),
                             0,
                             0)
             );
@@ -76,11 +100,14 @@ public class LocationNode extends AnchorNode {
             // Limit the distance of the Anchor within the scene.
             // Prevents uk.co.appoly.arcorelocation.rendering issues.
             int renderDistance = markerDistance;
-            if (renderDistance > LocationScene.distanceLimit)
-                renderDistance = LocationScene.distanceLimit;
+            if (renderDistance > locationScene.getDistanceLimit())
+                renderDistance = locationScene.getDistanceLimit();
+
+            float scale = 1F;
 
             // Make sure marker stays the same size on screen, no matter the distance
-            float scale = 0.5F * (float) renderDistance;
+            if (shouldScaleAtDistance())
+                scale = 0.5F * (float) renderDistance;
 
             // Distant markers a little smaller
             if (markerDistance > 3000)
@@ -89,14 +116,20 @@ public class LocationNode extends AnchorNode {
             scale *= scaleModifier;
 
             Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
-            Vector3 cardPosition = n.getWorldPosition();
-            n.setWorldPosition(new Vector3(n.getWorldPosition().x, 0F, n.getWorldPosition().z));
-            Vector3 direction = Vector3.subtract(cameraPosition, cardPosition);
+            Vector3 nodePosition = n.getWorldPosition();
+            n.setWorldPosition(new Vector3(n.getWorldPosition().x, getHeight(), n.getWorldPosition().z));
+            Vector3 direction = Vector3.subtract(cameraPosition, nodePosition);
             Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
 
             n.setWorldRotation(lookRotation);
             //locationMarker.node.setWorldScale(new Vector3(scale, scale, scale));
             n.setWorldScale(new Vector3(scale, scale, scale));
+
+            if (locationScene.shouldOffsetOverlapping()) {
+                if (locationScene.mArSceneView.getScene().overlapTestAll(n).size() > 0) {
+                    setHeight(getHeight() + 1.2F);
+                }
+            }
 
             if (renderEvent != null) {
                 renderEvent.render(this);

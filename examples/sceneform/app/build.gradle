@@ -53,10 +53,10 @@ android {
 dependencies {
     implementation "com.google.ar.sceneform:core:1.0.0"
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.0.0"
-    implementation "com.android.support:appcompat-v7:27.1.0"
-    implementation "com.android.support:design:27.1.0"
+    implementation "com.android.support:appcompat-v7:27.1.1"
+    implementation "com.android.support:design:27.1.1"
     //implementation 'uk.co.appoly.arcorelocation:arcore-location-debug@aar'
-    implementation 'com.github.appoly:ARCore-Location:1.0.2'
+    implementation 'com.github.appoly:ARCore-Location:1.0.3'
 }
 
 repositories {

@@ -20,8 +20,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -34,7 +32,6 @@ import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ViewRenderable;
@@ -59,6 +56,7 @@ public class LocationActivity extends AppCompatActivity {
 
     private ArSceneView arSceneView;
 
+    // Renderables for this example
     private ModelRenderable andyRenderable;
     private ViewRenderable exampleLayoutRenderable;
 
@@ -120,15 +118,20 @@ public class LocationActivity extends AppCompatActivity {
                         frameTime -> {
 
                             if (locationScene == null) {
-
+                                // If our locationScene object hasn't been setup yet, this is a good time to do it
+                                // We know that here, the AR components have been initiated.
                                 locationScene = new LocationScene(this, this, arSceneView);
 
+                                // Now lets create our location markers.
+                                // First, a layout
                                 LocationMarker layoutLocationMarker = new LocationMarker(
                                         -4.849509,
                                         42.814603,
                                         getExampleView()
                                 );
 
+                                // An example "onRender" event, called every frame
+                                // Updates the layout with the markers distance
                                 layoutLocationMarker.setRenderEvent(new LocationNodeRender() {
                                     @Override
                                     public void render(LocationNode node) {
@@ -137,9 +140,10 @@ public class LocationActivity extends AppCompatActivity {
                                         distanceTextView.setText(node.getDistance() + "M");
                                     }
                                 });
-
+                                // Adding the marker
                                 locationScene.mLocationMarkers.add(layoutLocationMarker);
 
+                                // Adding a simple location marker of a 3D model
                                 locationScene.mLocationMarkers.add(
                                         new LocationMarker(
                                                 -0.119677,
@@ -170,10 +174,15 @@ public class LocationActivity extends AppCompatActivity {
                         });
 
 
-        // Lastly request CAMERA permission which is required by ARCore.
+        // Lastly request CAMERA & fine location permission which is required by ARCore-Location.
         ARLocationPermissionHelper.requestPermission(this);
     }
 
+    /**
+     * Example node of a layout
+     *
+     * @return
+     */
     private Node getExampleView() {
         Node base = new Node();
         base.setRenderable(exampleLayoutRenderable);
@@ -190,6 +199,11 @@ public class LocationActivity extends AppCompatActivity {
         return base;
     }
 
+    /***
+     * Example Node of a 3D model
+     *
+     * @return
+     */
     private Node getAndy() {
         Node base = new Node();
         base.setRenderable(andyRenderable);
@@ -202,6 +216,9 @@ public class LocationActivity extends AppCompatActivity {
         return base;
     }
 
+    /**
+     * Make sure we call locationScene.resume();
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -239,6 +256,9 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Make sure we call locationScene.pause();
+     */
     @Override
     public void onPause() {
         super.onPause();

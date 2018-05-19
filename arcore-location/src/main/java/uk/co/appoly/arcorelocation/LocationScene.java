@@ -9,13 +9,7 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
-import com.google.ar.core.TrackingState;
-import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.Scene;
-import com.google.ar.sceneform.SceneView;
-import com.google.ar.sceneform.math.Quaternion;
-import com.google.ar.sceneform.math.Vector3;
 
 import java.util.ArrayList;
 
@@ -30,34 +24,29 @@ import uk.co.appoly.arcorelocation.utils.LocationUtils;
 
 public class LocationScene {
 
+    public ArSceneView mArSceneView;
+    public DeviceLocation deviceLocation;
+    public DeviceOrientation deviceOrientation;
+    public Context mContext;
+    public Activity mActivity;
+    public ArrayList<LocationMarker> mLocationMarkers = new ArrayList<>();
     // Anchors are currently re-drawn on an interval. There are likely better
     // ways of doing this, however it's sufficient for now.
-    private final static int ANCHOR_REFRESH_INTERVAL = 1000 * 5; // 5 seconds
-    public static Context mContext;
-    public static Activity mActivity;
-    public static ArSceneView mArSceneView;
-
-    public ArrayList<LocationMarker> mLocationMarkers = new ArrayList<>();
-
-    public static DeviceLocation deviceLocation;
-    public static DeviceOrientation deviceOrientation;
-
+    private int anchorRefreshInterval = 1000 * 5; // 5 seconds
     // Limit of where to draw markers within AR scene.
     // They will auto scale, but this helps prevents rendering issues
-    public static int distanceLimit = 20;
-
+    private int distanceLimit = 20;
+    private boolean offsetOverlapping = false;
     // Bearing adjustment. Can be set to calibrate with true north
     private int bearingAdjustment = 0;
-
     private String TAG = "LocationScene";
     private boolean anchorsNeedRefresh = true;
     private Handler mHandler = new Handler();
-
     Runnable anchorRefreshTask = new Runnable() {
         @Override
         public void run() {
             anchorsNeedRefresh = true;
-            mHandler.postDelayed(anchorRefreshTask, ANCHOR_REFRESH_INTERVAL);
+            mHandler.postDelayed(anchorRefreshTask, anchorRefreshInterval);
         }
     };
     private Session mSession;
@@ -71,16 +60,71 @@ public class LocationScene {
 
         startCalculationTask();
 
-        deviceLocation = new DeviceLocation();
-        deviceOrientation = new DeviceOrientation();
+        deviceLocation = new DeviceLocation(this);
+        deviceOrientation = new DeviceOrientation(this);
         deviceOrientation.resume();
+    }
+
+    public int getAnchorRefreshInterval() {
+        return anchorRefreshInterval;
+    }
+
+    /**
+     * Set the interval at which anchors should be automatically re-calculated.
+     *
+     * @param anchorRefreshInterval
+     */
+    public void setAnchorRefreshInterval(int anchorRefreshInterval) {
+        this.anchorRefreshInterval = anchorRefreshInterval;
+        stopCalculationTask();
+        startCalculationTask();
+    }
+
+    /**
+     * The distance cap for distant markers.
+     * ARCore doesn't like markers that are 2000km away :/
+     *
+     * @return
+     */
+    public int getDistanceLimit() {
+        return distanceLimit;
+    }
+
+    /**
+     * The distance cap for distant markers.
+     * ARCore doesn't like markers that are 2000km away :/
+     * Default 20
+     */
+    public void setDistanceLimit(int distanceLimit) {
+        this.distanceLimit = distanceLimit;
+    }
+
+    public boolean shouldOffsetOverlapping() {
+        return offsetOverlapping;
+    }
+
+    /**
+     * Attempts to raise markers vertically when they overlap.
+     * Needs work!
+     *
+     * @param offsetOverlapping
+     */
+    public void setOffsetOverlapping(boolean offsetOverlapping) {
+        this.offsetOverlapping = offsetOverlapping;
     }
 
     public void processFrame(Frame frame) {
         refreshAnchorsIfRequired(frame);
     }
 
-    public void refreshAnchorsIfRequired(Frame frame) {
+    /**
+     * Force anchors to be re-calculated
+     */
+    public void refreshAnchors() {
+        anchorsNeedRefresh = true;
+    }
+
+    private void refreshAnchorsIfRequired(Frame frame) {
         if (anchorsNeedRefresh) {
             anchorsNeedRefresh = false;
 
@@ -147,13 +191,14 @@ public class LocationScene {
                             frame.getCamera().getPose()
                                     .compose(Pose.makeTranslation(xRotated, y + (float) heightAdjustment, zRotated)));
 
-                    mLocationMarkers.get(i).anchorNode = new LocationNode(newAnchor, mLocationMarkers.get(i));
+                    mLocationMarkers.get(i).anchorNode = new LocationNode(newAnchor, mLocationMarkers.get(i), this);
                     mLocationMarkers.get(i).anchorNode.setParent(mArSceneView.getScene());
                     mLocationMarkers.get(i).anchorNode.addChild(mLocationMarkers.get(i).node);
 
-                    if(mLocationMarkers.get(i).getRenderEvent() != null) {
+                    if (mLocationMarkers.get(i).getRenderEvent() != null) {
                         mLocationMarkers.get(i).anchorNode.setRenderEvent(mLocationMarkers.get(i).getRenderEvent());
                     }
+                    mLocationMarkers.get(i).anchorNode.setHeight(mLocationMarkers.get(i).getHeight());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -163,20 +208,36 @@ public class LocationScene {
         }
     }
 
-
+    /**
+     * Adjustment for compass bearing.
+     *
+     * @return
+     */
     public int getBearingAdjustment() {
         return bearingAdjustment;
     }
 
+    /**
+     * Adjustment for compass bearing.
+     * You may use this for a custom method of improving precision.
+     *
+     * @param i
+     */
     public void setBearingAdjustment(int i) {
         bearingAdjustment = i;
         anchorsNeedRefresh = true;
     }
 
+    /**
+     * Resume sensor services. Important!
+     */
     public void resume() {
         deviceOrientation.resume();
     }
 
+    /**
+     * Pause sensor services. Important!
+     */
     public void pause() {
         deviceOrientation.pause();
     }

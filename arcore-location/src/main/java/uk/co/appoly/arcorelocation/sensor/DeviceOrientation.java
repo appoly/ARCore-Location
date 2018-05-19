@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
 
 import uk.co.appoly.arcorelocation.LocationScene;
 
@@ -27,12 +28,14 @@ public class DeviceOrientation implements SensorEventListener {
     private float azimuth;
     public float pitch;
     public float roll;
+    private LocationScene locationScene;
 
     // North
     public float currentDegree = 0f;
 
-    public DeviceOrientation() {
-        mSensorManager = (SensorManager) LocationScene.mContext.getSystemService(Context.SENSOR_SERVICE);
+    public DeviceOrientation(LocationScene locationScene) {
+        this.locationScene = locationScene;
+        mSensorManager = (SensorManager) locationScene.mContext.getSystemService(Context.SENSOR_SERVICE);
     }
 
     @Override
