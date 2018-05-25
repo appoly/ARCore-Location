@@ -128,6 +128,12 @@ public class LocationScene {
         if (anchorsNeedRefresh) {
             anchorsNeedRefresh = false;
 
+            if(deviceLocation == null || deviceLocation.currentBestLocation == null) {
+                Log.i(TAG, "Location not yet established.");
+                return;
+            }
+
+
             for (int i = 0; i < mLocationMarkers.size(); i++) {
                 try {
 
@@ -140,6 +146,12 @@ public class LocationScene {
                                     0,
                                     0)
                     );
+
+                    if (markerDistance > mLocationMarkers.get(i).getOnlyRenderWhenWithin()) {
+                        // Don't render if this has been set and we are too far away.
+                        Log.i(TAG, "Not rendering. Marker distance: " + markerDistance + " Max render distance: " + mLocationMarkers.get(i).getOnlyRenderWhenWithin());
+                        continue;
+                    }
 
                     float markerBearing = deviceOrientation.currentDegree + (float) LocationUtils.bearing(
                             deviceLocation.currentBestLocation.getLatitude(),
@@ -186,10 +198,16 @@ public class LocationScene {
                     // Current camera height
                     float y = frame.getCamera().getDisplayOrientedPose().ty();
 
+                    if(mLocationMarkers.get(i).anchorNode != null &&
+                            mLocationMarkers.get(i).anchorNode.getAnchor() != null) {
+                        mLocationMarkers.get(i).anchorNode.getAnchor().detach();
+                    }
+
                     // Don't immediately assign newly created anchor in-case of exceptions
                     Anchor newAnchor = mSession.createAnchor(
                             frame.getCamera().getPose()
                                     .compose(Pose.makeTranslation(xRotated, y + (float) heightAdjustment, zRotated)));
+
 
                     mLocationMarkers.get(i).anchorNode = new LocationNode(newAnchor, mLocationMarkers.get(i), this);
                     mLocationMarkers.get(i).anchorNode.setParent(mArSceneView.getScene());
@@ -198,6 +216,9 @@ public class LocationScene {
                     if (mLocationMarkers.get(i).getRenderEvent() != null) {
                         mLocationMarkers.get(i).anchorNode.setRenderEvent(mLocationMarkers.get(i).getRenderEvent());
                     }
+
+                    mLocationMarkers.get(i).anchorNode.setScaleModifier(mLocationMarkers.get(i).getScaleModifier());
+                    mLocationMarkers.get(i).anchorNode.setScaleAtDistance(mLocationMarkers.get(i).shouldScaleAtDistance());
                     mLocationMarkers.get(i).anchorNode.setHeight(mLocationMarkers.get(i).getHeight());
 
                 } catch (Exception e) {
