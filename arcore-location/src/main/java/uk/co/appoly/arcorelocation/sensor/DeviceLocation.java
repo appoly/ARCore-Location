@@ -1,7 +1,6 @@
 package uk.co.appoly.arcorelocation.sensor;
 
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,19 +26,24 @@ public class DeviceLocation implements LocationListener {
         try {
             // Getting LocationManager object
             locationManager = (LocationManager) locationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
-            // Creating an empty criteria object
 
+            boolean isGPSEnable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            Location location = null;
 
-                // Get the location from the given provider
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (isNetworkEnable) {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
+            } else if (isGPSEnable) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
+            } else {
+                Toast.makeText(locationScene.mContext, "All location providers are disabled.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                if (location != null)
-                    onLocationChanged(location);
-                // Don't need this, as location may take a few seconds to come in
-                //else
-                //    Toast.makeText(LocationScene.mContext, "Location can't be retrieved", Toast.LENGTH_SHORT).show();
-
+            if (location != null)
+                onLocationChanged(location);
 
         } catch (SecurityException e) {
             Toast.makeText(locationScene.mContext, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
@@ -117,7 +121,7 @@ public class DeviceLocation implements LocationListener {
     public void onProviderEnabled(String provider) {
         try {
             locationManager.requestLocationUpdates(provider, 0, 0, this);
-        } catch(SecurityException e) {
+        } catch (SecurityException e) {
 
         }
     }
