@@ -22,7 +22,11 @@ public class DeviceLocation implements LocationListener {
 
     public DeviceLocation(LocationScene locationScene) {
         this.locationScene = locationScene;
+        requestLocationUpdates();
+    }
 
+
+    private void requestLocationUpdates() {
         try {
             // Getting LocationManager object
             locationManager = (LocationManager) locationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -110,11 +114,13 @@ public class DeviceLocation implements LocationListener {
     public void onLocationChanged(Location location) {
         if (isBetterLocation(location)) {
             currentBestLocation = location;
+            requestLocationUpdates();
         }
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        requestLocationUpdates();
     }
 
     @Override
