@@ -51,7 +51,8 @@ import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
  */
 public class LocationActivity extends AppCompatActivity {
     private boolean installRequested;
-
+    private boolean hasFinishedLoading = false;
+    
     private Snackbar loadingMessageSnackbar = null;
 
     private ArSceneView arSceneView;
@@ -102,6 +103,7 @@ public class LocationActivity extends AppCompatActivity {
                             try {
                                 exampleLayoutRenderable = exampleLayout.get();
                                 andyRenderable = andy.get();
+                                hasFinishedLoading = true;
 
                             } catch (InterruptedException | ExecutionException ex) {
                                 DemoUtils.displayError(this, "Unable to load renderables", ex);
@@ -116,6 +118,9 @@ public class LocationActivity extends AppCompatActivity {
                 .getScene()
                 .setOnUpdateListener(
                         frameTime -> {
+                            if (!hasFinishedLoading) {
+                                return;
+                            }
 
                             if (locationScene == null) {
                                 // If our locationScene object hasn't been setup yet, this is a good time to do it
