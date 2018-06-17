@@ -25,13 +25,31 @@ public class LocationMarker {
     private LocationNodeRender renderEvent;
     private float scaleModifier = 1F;
     private float height = 0F;
-    private boolean scaleAtDistance = true;
     private int onlyRenderWhenWithin = Integer.MAX_VALUE;
+    private ScalingMode scalingMode = ScalingMode.FIXED_SIZE_ON_SCREEN;
+    private float gradualScalingMinScale = 0.8F;
+    private float gradualScalingMaxScale = 1.4F;
 
     public LocationMarker(double longitude, double latitude, Node node) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.node = node;
+    }
+
+    public float getGradualScalingMinScale() {
+        return gradualScalingMinScale;
+    }
+
+    public void setGradualScalingMinScale(float gradualScalingMinScale) {
+        this.gradualScalingMinScale = gradualScalingMinScale;
+    }
+
+    public float getGradualScalingMaxScale() {
+        return gradualScalingMaxScale;
+    }
+
+    public void setGradualScalingMaxScale(float gradualScalingMaxScale) {
+        this.gradualScalingMaxScale = gradualScalingMaxScale;
     }
 
     /**
@@ -71,21 +89,21 @@ public class LocationMarker {
     }
 
     /**
-     * Whether the marker should stay at the same size on screen, regardless of distance.
+     * How the markers should scale
      *
-     * @return - true/false
+     * @return - ScalingMode
      */
-    public boolean shouldScaleAtDistance() {
-        return scaleAtDistance;
+    public ScalingMode getScalingMode() {
+        return scalingMode;
     }
 
     /**
-     * Whether the marker should stay at the same size on screen, regardless of distance.
+     * Whether the marker should scale, regardless of distance.
      *
-     * @param scaleAtDistance - true/false
+     * @param scalingMode - ScalingMode.X
      */
-    public void setScaleAtDistance(boolean scaleAtDistance) {
-        this.scaleAtDistance = scaleAtDistance;
+    public void setScalingMode(ScalingMode scalingMode) {
+        this.scalingMode = scalingMode;
     }
 
     /**
@@ -106,7 +124,6 @@ public class LocationMarker {
         this.scaleModifier = scaleModifier;
     }
 
-
     /**
      * Called on each frame
      *
@@ -121,6 +138,12 @@ public class LocationMarker {
      */
     public void setRenderEvent(LocationNodeRender renderEvent) {
         this.renderEvent = renderEvent;
+    }
+
+    public enum ScalingMode {
+        FIXED_SIZE_ON_SCREEN,
+        NO_SCALING,
+        GRADUAL_TO_MAX_RENDER_DISTANCE
     }
 
 }

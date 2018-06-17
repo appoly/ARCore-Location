@@ -14,7 +14,9 @@ import com.google.ar.sceneform.ArSceneView;
 import java.util.ArrayList;
 
 import uk.co.appoly.arcorelocation.rendering.LocationNode;
+import uk.co.appoly.arcorelocation.rendering.LocationNodeRender;
 import uk.co.appoly.arcorelocation.sensor.DeviceLocation;
+import uk.co.appoly.arcorelocation.sensor.DeviceLocationChanged;
 import uk.co.appoly.arcorelocation.sensor.DeviceOrientation;
 import uk.co.appoly.arcorelocation.utils.LocationUtils;
 
@@ -41,6 +43,8 @@ public class LocationScene {
     private int bearingAdjustment = 0;
     private String TAG = "LocationScene";
     private boolean anchorsNeedRefresh = true;
+    private boolean minimalRefreshing = false;
+    private boolean refreshAnchorsAsLocationChanges = false;
     private Handler mHandler = new Handler();
     Runnable anchorRefreshTask = new Runnable() {
         @Override
@@ -50,7 +54,7 @@ public class LocationScene {
         }
     };
     private Session mSession;
-
+    private DeviceLocationChanged locationChangedEvent;
     public LocationScene(Context mContext, Activity mActivity, ArSceneView mArSceneView) {
         Log.i(TAG, "Location Scene initiated.");
         this.mContext = mContext;
@@ -63,6 +67,46 @@ public class LocationScene {
         deviceLocation = new DeviceLocation(this);
         deviceOrientation = new DeviceOrientation(this);
         deviceOrientation.resume();
+    }
+
+    public boolean minimalRefreshing() {
+        return minimalRefreshing;
+    }
+
+    public void setMinimalRefreshing(boolean minimalRefreshing) {
+        this.minimalRefreshing = minimalRefreshing;
+    }
+
+    public boolean refreshAnchorsAsLocationChanges() {
+        return refreshAnchorsAsLocationChanges;
+    }
+
+    public void setRefreshAnchorsAsLocationChanges(boolean refreshAnchorsAsLocationChanges) {
+        if (refreshAnchorsAsLocationChanges) {
+            stopCalculationTask();
+        } else {
+            startCalculationTask();
+        }
+        refreshAnchors();
+        this.refreshAnchorsAsLocationChanges = refreshAnchorsAsLocationChanges;
+    }
+
+    /**
+     * Get additional event to run as device location changes.
+     * Save creating extra sensor classes
+     *
+     * @return
+     */
+    public DeviceLocationChanged getLocationChangedEvent() {
+        return locationChangedEvent;
+    }
+
+    /**
+     * Set additional event to run as device location changes.
+     * Save creating extra sensor classes
+     */
+    public void setLocationChangedEvent(DeviceLocationChanged locationChangedEvent) {
+        this.locationChangedEvent = locationChangedEvent;
     }
 
     public int getAnchorRefreshInterval() {
@@ -78,6 +122,18 @@ public class LocationScene {
         this.anchorRefreshInterval = anchorRefreshInterval;
         stopCalculationTask();
         startCalculationTask();
+    }
+
+    public void clearMarkers() {
+        for(LocationMarker lm : mLocationMarkers) {
+            if(lm.anchorNode != null) {
+                lm.anchorNode.getAnchor().detach();
+                lm.anchorNode.setEnabled(false);
+                lm.anchorNode = null;
+            }
+
+        }
+        mLocationMarkers = new ArrayList<>();
     }
 
     /**
@@ -126,9 +182,10 @@ public class LocationScene {
 
     private void refreshAnchorsIfRequired(Frame frame) {
         if (anchorsNeedRefresh) {
+            Log.i(TAG, "Refreshing anchors...");
             anchorsNeedRefresh = false;
 
-            if(deviceLocation == null || deviceLocation.currentBestLocation == null) {
+            if (deviceLocation == null || deviceLocation.currentBestLocation == null) {
                 Log.i(TAG, "Location not yet established.");
                 return;
             }
@@ -198,9 +255,12 @@ public class LocationScene {
                     // Current camera height
                     float y = frame.getCamera().getDisplayOrientedPose().ty();
 
-                    if(mLocationMarkers.get(i).anchorNode != null &&
+                    if (mLocationMarkers.get(i).anchorNode != null &&
                             mLocationMarkers.get(i).anchorNode.getAnchor() != null) {
                         mLocationMarkers.get(i).anchorNode.getAnchor().detach();
+                        mLocationMarkers.get(i).anchorNode.setAnchor(null);
+                        mLocationMarkers.get(i).anchorNode.setEnabled(false);
+                        mLocationMarkers.get(i).anchorNode = null;
                     }
 
                     // Don't immediately assign newly created anchor in-case of exceptions
@@ -218,14 +278,20 @@ public class LocationScene {
                     }
 
                     mLocationMarkers.get(i).anchorNode.setScaleModifier(mLocationMarkers.get(i).getScaleModifier());
-                    mLocationMarkers.get(i).anchorNode.setScaleAtDistance(mLocationMarkers.get(i).shouldScaleAtDistance());
+                    mLocationMarkers.get(i).anchorNode.setScalingMode(mLocationMarkers.get(i).getScalingMode());
+                    mLocationMarkers.get(i).anchorNode.setGradualScalingMaxScale(mLocationMarkers.get(i).getGradualScalingMaxScale());
+                    mLocationMarkers.get(i).anchorNode.setGradualScalingMinScale(mLocationMarkers.get(i).getGradualScalingMinScale());
                     mLocationMarkers.get(i).anchorNode.setHeight(mLocationMarkers.get(i).getHeight());
 
+                    if(minimalRefreshing)
+                        mLocationMarkers.get(i).anchorNode.scaleAndRotate();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
+
+            System.gc();
         }
     }
 

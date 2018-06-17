@@ -20,9 +20,13 @@ public class LocationNode extends AnchorNode {
     private LocationMarker locationMarker;
     private LocationNodeRender renderEvent;
     private int distance;
+    private double distanceInAR;
     private float scaleModifier = 1F;
     private float height = 0F;
-    private boolean scaleAtDistance = true;
+    private float gradualScalingMinScale = 0.8F;
+    private float gradualScalingMaxScale = 1.4F;
+
+    private LocationMarker.ScalingMode scalingMode = LocationMarker.ScalingMode.FIXED_SIZE_ON_SCREEN;
     private LocationScene locationScene;
 
     public LocationNode(Anchor anchor, LocationMarker locationMarker, LocationScene locationScene) {
@@ -59,16 +63,24 @@ public class LocationNode extends AnchorNode {
         return distance;
     }
 
+    public double getDistanceInAR() {
+        return distanceInAR;
+    }
+
     public void setDistance(int distance) {
         this.distance = distance;
     }
 
-    public boolean shouldScaleAtDistance() {
-        return scaleAtDistance;
+    public void setDistanceInAR(double distanceInAR) {
+        this.distanceInAR = distanceInAR;
     }
 
-    public void setScaleAtDistance(boolean scaleAtDistance) {
-        this.scaleAtDistance = scaleAtDistance;
+    public LocationMarker.ScalingMode getScalingMode() {
+        return scalingMode;
+    }
+
+    public void setScalingMode(LocationMarker.ScalingMode scalingMode) {
+        this.scalingMode = scalingMode;
     }
 
     @Override
@@ -85,6 +97,39 @@ public class LocationNode extends AnchorNode {
                 return;
             }
 
+            Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
+            Vector3 nodePosition = n.getWorldPosition();
+
+            // Compute the difference vector between the camera and anchor
+            float dx = cameraPosition.x - nodePosition.x;
+            float dy = cameraPosition.y - nodePosition.y;
+            float dz = cameraPosition.z - nodePosition.z;
+
+            // Compute the straight-line distance.
+            setDistanceInAR(Math.sqrt(dx * dx + dy * dy + dz * dz));
+
+
+            if (locationScene.shouldOffsetOverlapping()) {
+                if (locationScene.mArSceneView.getScene().overlapTestAll(n).size() > 0) {
+                    setHeight(getHeight() + 1.2F);
+                }
+            }
+        }
+
+        if(!locationScene.minimalRefreshing())
+            scaleAndRotate();
+
+
+        if (renderEvent != null) {
+            if(this.isTracking() && this.isActive() && this.isEnabled())
+                renderEvent.render(this);
+        }
+
+    }
+
+    public void scaleAndRotate() {
+
+        for (Node n : getChildren()) {
             int markerDistance = (int) Math.ceil(
                     LocationUtils.distance(
                             locationMarker.latitude,
@@ -105,13 +150,24 @@ public class LocationNode extends AnchorNode {
 
             float scale = 1F;
 
-            // Make sure marker stays the same size on screen, no matter the distance
-            if (shouldScaleAtDistance())
-                scale = 0.5F * (float) renderDistance;
+            switch (scalingMode) {
 
-            // Distant markers a little smaller
-            if (markerDistance > 3000)
-                scale *= 0.75F;
+                // Make sure marker stays the same size on screen, no matter the distance
+                case FIXED_SIZE_ON_SCREEN:
+                    scale = 0.5F * (float) renderDistance;
+
+                    // Distant markers a little smaller
+                    if (markerDistance > 3000)
+                        scale *= 0.75F;
+
+                    break;
+
+                case GRADUAL_TO_MAX_RENDER_DISTANCE:
+                    float scaleDifference = gradualScalingMaxScale - gradualScalingMinScale;
+                    scale = (gradualScalingMinScale + ((locationScene.getDistanceLimit() - markerDistance) * (scaleDifference / locationScene.getDistanceLimit()))) * renderDistance;
+                    break;
+            }
+
 
             scale *= scaleModifier;
 
@@ -125,17 +181,24 @@ public class LocationNode extends AnchorNode {
             //locationMarker.node.setWorldScale(new Vector3(scale, scale, scale));
             n.setWorldScale(new Vector3(scale, scale, scale));
 
-            if (locationScene.shouldOffsetOverlapping()) {
-                if (locationScene.mArSceneView.getScene().overlapTestAll(n).size() > 0) {
-                    setHeight(getHeight() + 1.2F);
-                }
-            }
 
-            if (renderEvent != null) {
-                renderEvent.render(this);
-            }
 
         }
+    }
 
+    public float getGradualScalingMinScale() {
+        return gradualScalingMinScale;
+    }
+
+    public void setGradualScalingMinScale(float gradualScalingMinScale) {
+        this.gradualScalingMinScale = gradualScalingMinScale;
+    }
+
+    public float getGradualScalingMaxScale() {
+        return gradualScalingMaxScale;
+    }
+
+    public void setGradualScalingMaxScale(float gradualScalingMaxScale) {
+        this.gradualScalingMaxScale = gradualScalingMaxScale;
     }
 }
