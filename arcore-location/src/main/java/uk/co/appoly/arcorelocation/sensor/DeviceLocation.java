@@ -1,8 +1,6 @@
 package uk.co.appoly.arcorelocation.sensor;
 
-import android.content.Context;
 import android.location.Criteria;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -169,13 +167,16 @@ public class DeviceLocation implements LocationListener {
         if (age > 5 * 1000) { //more than 5 seconds
             Log.d(TAG, "Location is old");
             oldLocationList.add(location);
-            Toast.makeText(locationScene.mContext, "Rejected: old", Toast.LENGTH_SHORT).show();
+
+            if (locationScene.isDebugEnabled())
+                Toast.makeText(locationScene.mContext, "Rejected: old", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (location.getAccuracy() <= 0) {
             Log.d(TAG, "Latitidue and longitude values are invalid.");
-            Toast.makeText(locationScene.mContext, "Rejected: invalid", Toast.LENGTH_SHORT).show();
+            if (locationScene.isDebugEnabled())
+                Toast.makeText(locationScene.mContext, "Rejected: invalid", Toast.LENGTH_SHORT).show();
             noAccuracyLocationList.add(location);
             return false;
         }
@@ -185,7 +186,8 @@ public class DeviceLocation implements LocationListener {
         if (horizontalAccuracy > getMinimumAccuracy()) { //10meter filter
             Log.d(TAG, "Accuracy is too low.");
             inaccurateLocationList.add(location);
-            Toast.makeText(locationScene.mContext, "Rejected: innacurate", Toast.LENGTH_SHORT).show();
+            if (locationScene.isDebugEnabled())
+                Toast.makeText(locationScene.mContext, "Rejected: innacurate", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -220,7 +222,8 @@ public class DeviceLocation implements LocationListener {
             }
 
             kalmanNGLocationList.add(location);
-            Toast.makeText(locationScene.mContext, "Rejected: kalman filter", Toast.LENGTH_SHORT).show();
+            if (locationScene.isDebugEnabled())
+                Toast.makeText(locationScene.mContext, "Rejected: kalman filter", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             kalmanFilter.consecutiveRejectCount = 0;

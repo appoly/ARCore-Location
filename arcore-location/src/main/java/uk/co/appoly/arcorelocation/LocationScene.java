@@ -14,7 +14,6 @@ import com.google.ar.sceneform.ArSceneView;
 import java.util.ArrayList;
 
 import uk.co.appoly.arcorelocation.rendering.LocationNode;
-import uk.co.appoly.arcorelocation.rendering.LocationNodeRender;
 import uk.co.appoly.arcorelocation.sensor.DeviceLocation;
 import uk.co.appoly.arcorelocation.sensor.DeviceLocationChanged;
 import uk.co.appoly.arcorelocation.sensor.DeviceOrientation;
@@ -53,6 +52,7 @@ public class LocationScene {
             mHandler.postDelayed(anchorRefreshTask, anchorRefreshInterval);
         }
     };
+    private boolean debugEnabled = false;
     private Session mSession;
     private DeviceLocationChanged locationChangedEvent;
     public LocationScene(Context mContext, Activity mActivity, ArSceneView mArSceneView) {
@@ -67,6 +67,14 @@ public class LocationScene {
         deviceLocation = new DeviceLocation(this);
         deviceOrientation = new DeviceOrientation(this);
         deviceOrientation.resume();
+    }
+
+    public boolean isDebugEnabled() {
+        return debugEnabled;
+    }
+
+    public void setDebugEnabled(boolean debugEnabled) {
+        this.debugEnabled = debugEnabled;
     }
 
     public boolean minimalRefreshing() {
@@ -125,8 +133,8 @@ public class LocationScene {
     }
 
     public void clearMarkers() {
-        for(LocationMarker lm : mLocationMarkers) {
-            if(lm.anchorNode != null) {
+        for (LocationMarker lm : mLocationMarkers) {
+            if (lm.anchorNode != null) {
                 lm.anchorNode.getAnchor().detach();
                 lm.anchorNode.setEnabled(false);
                 lm.anchorNode = null;
@@ -283,7 +291,7 @@ public class LocationScene {
                     mLocationMarkers.get(i).anchorNode.setGradualScalingMinScale(mLocationMarkers.get(i).getGradualScalingMinScale());
                     mLocationMarkers.get(i).anchorNode.setHeight(mLocationMarkers.get(i).getHeight());
 
-                    if(minimalRefreshing)
+                    if (minimalRefreshing)
                         mLocationMarkers.get(i).anchorNode.scaleAndRotate();
                 } catch (Exception e) {
                     e.printStackTrace();
