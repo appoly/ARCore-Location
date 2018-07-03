@@ -215,6 +215,16 @@ public class LocationScene {
                     if (markerDistance > mLocationMarkers.get(i).getOnlyRenderWhenWithin()) {
                         // Don't render if this has been set and we are too far away.
                         Log.i(TAG, "Not rendering. Marker distance: " + markerDistance + " Max render distance: " + mLocationMarkers.get(i).getOnlyRenderWhenWithin());
+                        /*******************************************************************************************************/
+                        /** Remove this marker if it was previously added*/
+                        if (mLocationMarkers.get(i).anchorNode != null && mLocationMarkers.get(i).anchorNode.getAnchor() != null) {
+                            /*mLocationMarkers.get(i).anchorNode.getAnchor().detach();
+                            mLocationMarkers.get(i).anchorNode.setAnchor(null);
+                            mLocationMarkers.get(i).anchorNode.setEnabled(false);
+                            mLocationMarkers.get(i).anchorNode = null;*/
+                            removeLocationNode(mLocationMarkers.get(i).anchorNode);
+                        }
+                        /*******************************************************************************************************/
                         continue;
                     }
 
@@ -265,10 +275,11 @@ public class LocationScene {
 
                     if (mLocationMarkers.get(i).anchorNode != null &&
                             mLocationMarkers.get(i).anchorNode.getAnchor() != null) {
-                        mLocationMarkers.get(i).anchorNode.getAnchor().detach();
+                        /*mLocationMarkers.get(i).anchorNode.getAnchor().detach();
                         mLocationMarkers.get(i).anchorNode.setAnchor(null);
                         mLocationMarkers.get(i).anchorNode.setEnabled(false);
-                        mLocationMarkers.get(i).anchorNode = null;
+                        mLocationMarkers.get(i).anchorNode = null;*/
+                        removeLocationNode(mLocationMarkers.get(i).anchorNode);
                     }
 
                     // Don't immediately assign newly created anchor in-case of exceptions
@@ -328,6 +339,9 @@ public class LocationScene {
      */
     public void resume() {
         deviceOrientation.resume();
+        /************************************************************************/
+        deviceLocation.startUpdatingLocation();
+        /************************************************************************/
     }
 
     /**
@@ -335,6 +349,9 @@ public class LocationScene {
      */
     public void pause() {
         deviceOrientation.pause();
+        /************************************************************************/
+        deviceLocation.stopUpdatingLocation();
+        /************************************************************************/
     }
 
     void startCalculationTask() {
@@ -344,4 +361,19 @@ public class LocationScene {
     void stopCalculationTask() {
         mHandler.removeCallbacks(anchorRefreshTask);
     }
+
+    /******************************************************************************************/
+    /**
+     * Remove a previously added LocationNode.
+     * You may use this when onlyRenderWhenWithin of an already displayed LocationMarker changes
+     *
+     * @param locationNode
+     */
+    private void removeLocationNode(LocationNode locationNode){
+        locationNode.getAnchor().detach();
+        locationNode.setAnchor(null);
+        locationNode.setEnabled(false);
+        locationNode = null;
+    }
+    /******************************************************************************************/
 }

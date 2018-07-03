@@ -43,7 +43,7 @@ public class LocationScene {
     public ArrayList<LocationMarker> mLocationMarkers = new ArrayList<>();
     private Handler mHandler = new Handler();
 
-    public uk.co.appoly.arcorelocation.sensor.DeviceLocation deviceLocation;
+    public DeviceLocation deviceLocation;
     public uk.co.appoly.arcorelocation.sensor.DeviceOrientation deviceOrientation;
 
     public static Context mContext;
