@@ -201,4 +201,10 @@ public class LocationNode extends AnchorNode {
     public void setGradualScalingMaxScale(float gradualScalingMaxScale) {
         this.gradualScalingMaxScale = gradualScalingMaxScale;
     }
+
+    /**************************************************************************/
+    public LocationMarker getLocationMarker() {
+        return locationMarker;
+    }
+    /**************************************************************************/
 }
