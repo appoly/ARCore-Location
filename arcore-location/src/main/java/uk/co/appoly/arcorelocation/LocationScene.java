@@ -305,6 +305,7 @@ public class LocationScene {
                     if (minimalRefreshing)
                         mLocationMarkers.get(i).anchorNode.scaleAndRotate();
                 } catch (Exception e) {
+                    Log.e(TAG, "error = " + e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -366,10 +367,13 @@ public class LocationScene {
     /**
      * Remove a previously added LocationNode.
      * You may use this when onlyRenderWhenWithin of an already displayed LocationMarker changes
+     * or if you want to simply remove/hide a LocationNode
      *
      * @param locationNode
      */
-    private void removeLocationNode(LocationNode locationNode){
+    public void removeLocationNode(LocationNode locationNode){
+        if(locationNode == null)
+            return;
         locationNode.getAnchor().detach();
         locationNode.setAnchor(null);
         locationNode.setEnabled(false);

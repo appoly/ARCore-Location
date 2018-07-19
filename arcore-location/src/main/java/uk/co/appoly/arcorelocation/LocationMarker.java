@@ -32,14 +32,16 @@ public class LocationMarker {
 
     /********************************************************/
     public String name;
+    public String id;
     /********************************************************/
 
-    public LocationMarker(double longitude, double latitude, /*****/String name,/*****/ Node node) {
+    public LocationMarker(double longitude, double latitude, /*****/String name, String id,/*****/ Node node) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.node = node;
         /****************/
         this.name = name;
+        this.id = id;
         /****************/
     }
 
