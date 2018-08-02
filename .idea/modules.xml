@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ARCore-Location-appoly.iml" filepath="$PROJECT_DIR$/ARCore-Location-appoly.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcore-location/arcore-location.iml" filepath="$PROJECT_DIR$/arcore-location/arcore-location.iml" />
+      <module fileurl="file://$PROJECT_DIR$/arcore-location-fork.iml" filepath="$PROJECT_DIR$/arcore-location-fork.iml" />
     </modules>
   </component>
 </project>
