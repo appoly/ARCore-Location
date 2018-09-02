@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mopar/app/app.iml" filepath="$PROJECT_DIR$/../mopar/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/arcore-location/arcore-location.iml" filepath="$PROJECT_DIR$/arcore-location/arcore-location.iml" />
-      <module fileurl="file://$PROJECT_DIR$/arcore-location-fork.iml" filepath="$PROJECT_DIR$/arcore-location-fork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mopar/data-module/data-module.iml" filepath="$PROJECT_DIR$/../mopar/data-module/data-module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mopar/mopar.iml" filepath="$PROJECT_DIR$/../mopar/mopar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mopar/shared-module/shared-module.iml" filepath="$PROJECT_DIR$/../mopar/shared-module/shared-module.iml" />
     </modules>
   </component>
 </project>
