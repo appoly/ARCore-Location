@@ -117,6 +117,19 @@ public class LocationScene {
         this.locationChangedEvent = locationChangedEvent;
     }
 
+    /******************************************************************************************/
+    /**
+     * Set location device parameters
+     * @param updateInterval desired interval for active location updates in milliseconds
+     * @param smallestDisplacement minimum displacement between location updates in meters
+     * @param accuracyThreshold
+     * */
+    public void updateLocationSettings(long updateInterval, float smallestDisplacement, int accuracyThreshold){
+        if(deviceLocation != null && deviceLocation.locationManager != null)
+            deviceLocation.locationManager.updateLocationValues(updateInterval, smallestDisplacement, accuracyThreshold);
+    }
+    /******************************************************************************************/
+
     public int getAnchorRefreshInterval() {
         return anchorRefreshInterval;
     }
@@ -339,9 +352,10 @@ public class LocationScene {
      * Resume sensor services. Important!
      */
     public void resume() {
+        Log.d(TAG, "in resume");
         deviceOrientation.resume();
         /************************************************************************/
-        deviceLocation.startUpdatingLocation();
+        deviceLocation.resume();
         /************************************************************************/
     }
 
@@ -349,9 +363,10 @@ public class LocationScene {
      * Pause sensor services. Important!
      */
     public void pause() {
+        Log.d(TAG, "in pause");
         deviceOrientation.pause();
         /************************************************************************/
-        deviceLocation.stopUpdatingLocation();
+        deviceLocation.pause();
         /************************************************************************/
     }
 
@@ -371,13 +386,22 @@ public class LocationScene {
      *
      * @param locationNode
      */
-    public void removeLocationNode(LocationNode locationNode){
+    private void removeLocationNode(LocationNode locationNode){
         if(locationNode == null)
             return;
-        locationNode.getAnchor().detach();
+        if(locationNode.getAnchor() != null)
+            locationNode.getAnchor().detach();
         locationNode.setAnchor(null);
         locationNode.setEnabled(false);
         locationNode = null;
     }
+
+    public void removeLocationMarker(LocationMarker locationMarker){
+        Log.d(TAG, "in removeLocationMarker");
+        removeLocationNode(locationMarker.anchorNode);
+        boolean removed = mLocationMarkers.remove(locationMarker);
+        Log.d(TAG, "location marker removed = " + removed);
+    }
+
     /******************************************************************************************/
 }
