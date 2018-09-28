@@ -60,7 +60,11 @@ public class LocationManager {
         Log.d(LOGTAG,"observers.indexOf(locationUpdateListener) = " + observers.indexOf(locationUpdateListener));
         if(observers.indexOf(locationUpdateListener) == -1) {
             Log.d(LOGTAG, "adding to observers list");
-            observers.add(locationUpdateListener);
+            if(currentBestLocation != null) { //dispacht latest best location
+                Log.d(LOGTAG, "dispatch latest currentBestLocation");
+                locationUpdateListener.onLocationUpdate(currentBestLocation);
+            }
+            observers.add(locationUpdateListener); //add for future location updates
         }
         else
             Log.d(LOGTAG, "will not add to observers list");
@@ -179,6 +183,7 @@ public class LocationManager {
 
         if(restartLocationRequest){
             stopUpdatingLocation();
+            mLocationRequest = null;
             startUpdatingLocation();
         }
     }
