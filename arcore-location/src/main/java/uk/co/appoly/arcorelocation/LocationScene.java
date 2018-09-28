@@ -117,6 +117,19 @@ public class LocationScene {
         this.locationChangedEvent = locationChangedEvent;
     }
 
+    /******************************************************************************************/
+    /**
+     * Set location device parameters
+     * @param updateInterval desired interval for active location updates in milliseconds
+     * @param smallestDisplacement minimum displacement between location updates in meters
+     * @param accuracyThreshold
+     * */
+    public void updateLocationSettings(long updateInterval, float smallestDisplacement, int accuracyThreshold){
+        if(deviceLocation != null && deviceLocation.locationManager != null)
+            deviceLocation.locationManager.updateLocationValues(updateInterval, smallestDisplacement, accuracyThreshold);
+    }
+    /******************************************************************************************/
+
     public int getAnchorRefreshInterval() {
         return anchorRefreshInterval;
     }
@@ -215,6 +228,16 @@ public class LocationScene {
                     if (markerDistance > mLocationMarkers.get(i).getOnlyRenderWhenWithin()) {
                         // Don't render if this has been set and we are too far away.
                         Log.i(TAG, "Not rendering. Marker distance: " + markerDistance + " Max render distance: " + mLocationMarkers.get(i).getOnlyRenderWhenWithin());
+                        /*******************************************************************************************************/
+                        /** Remove this marker if it was previously added*/
+                        if (mLocationMarkers.get(i).anchorNode != null && mLocationMarkers.get(i).anchorNode.getAnchor() != null) {
+                            /*mLocationMarkers.get(i).anchorNode.getAnchor().detach();
+                            mLocationMarkers.get(i).anchorNode.setAnchor(null);
+                            mLocationMarkers.get(i).anchorNode.setEnabled(false);
+                            mLocationMarkers.get(i).anchorNode = null;*/
+                            removeLocationNode(mLocationMarkers.get(i).anchorNode);
+                        }
+                        /*******************************************************************************************************/
                         continue;
                     }
 
@@ -265,10 +288,11 @@ public class LocationScene {
 
                     if (mLocationMarkers.get(i).anchorNode != null &&
                             mLocationMarkers.get(i).anchorNode.getAnchor() != null) {
-                        mLocationMarkers.get(i).anchorNode.getAnchor().detach();
+                        /*mLocationMarkers.get(i).anchorNode.getAnchor().detach();
                         mLocationMarkers.get(i).anchorNode.setAnchor(null);
                         mLocationMarkers.get(i).anchorNode.setEnabled(false);
-                        mLocationMarkers.get(i).anchorNode = null;
+                        mLocationMarkers.get(i).anchorNode = null;*/
+                        removeLocationNode(mLocationMarkers.get(i).anchorNode);
                     }
 
                     // Don't immediately assign newly created anchor in-case of exceptions
@@ -294,6 +318,7 @@ public class LocationScene {
                     if (minimalRefreshing)
                         mLocationMarkers.get(i).anchorNode.scaleAndRotate();
                 } catch (Exception e) {
+                    Log.e(TAG, "error = " + e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -327,14 +352,22 @@ public class LocationScene {
      * Resume sensor services. Important!
      */
     public void resume() {
+        Log.d(TAG, "in resume");
         deviceOrientation.resume();
+        /************************************************************************/
+        deviceLocation.resume();
+        /************************************************************************/
     }
 
     /**
      * Pause sensor services. Important!
      */
     public void pause() {
+        Log.d(TAG, "in pause");
         deviceOrientation.pause();
+        /************************************************************************/
+        deviceLocation.pause();
+        /************************************************************************/
     }
 
     void startCalculationTask() {
@@ -344,4 +377,31 @@ public class LocationScene {
     void stopCalculationTask() {
         mHandler.removeCallbacks(anchorRefreshTask);
     }
+
+    /******************************************************************************************/
+    /**
+     * Remove a previously added LocationNode.
+     * You may use this when onlyRenderWhenWithin of an already displayed LocationMarker changes
+     * or if you want to simply remove/hide a LocationNode
+     *
+     * @param locationNode
+     */
+    private void removeLocationNode(LocationNode locationNode){
+        if(locationNode == null)
+            return;
+        if(locationNode.getAnchor() != null)
+            locationNode.getAnchor().detach();
+        locationNode.setAnchor(null);
+        locationNode.setEnabled(false);
+        locationNode = null;
+    }
+
+    public void removeLocationMarker(LocationMarker locationMarker){
+        Log.d(TAG, "in removeLocationMarker");
+        removeLocationNode(locationMarker.anchorNode);
+        boolean removed = mLocationMarkers.remove(locationMarker);
+        Log.d(TAG, "location marker removed = " + removed);
+    }
+
+    /******************************************************************************************/
 }

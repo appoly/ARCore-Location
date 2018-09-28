@@ -30,10 +30,19 @@ public class LocationMarker {
     private float gradualScalingMinScale = 0.8F;
     private float gradualScalingMaxScale = 1.4F;
 
-    public LocationMarker(double longitude, double latitude, Node node) {
+    /********************************************************/
+    public String name;
+    public String id;
+    /********************************************************/
+
+    public LocationMarker(double longitude, double latitude, /*****/String name, String id,/*****/ Node node) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.node = node;
+        /****************/
+        this.name = name;
+        this.id = id;
+        /****************/
     }
 
     public float getGradualScalingMinScale() {

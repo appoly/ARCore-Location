@@ -30,6 +30,12 @@ public class DeviceOrientation implements SensorEventListener {
     public float roll;
     private LocationScene locationScene;
 
+    /********************************************/
+    private float rots[] = new float[3];
+    private float[] mRotationMatrix = new float[16];
+    private double mapsCameraBearing;
+    /********************************************/
+
     // North
     public float currentDegree = 0f;
 
@@ -55,6 +61,17 @@ public class DeviceOrientation implements SensorEventListener {
             case Sensor.TYPE_ACCELEROMETER:
                 accels = event.values.clone();
                 break;
+            /*********************************************************************************/
+            case Sensor.TYPE_ROTATION_VECTOR:
+                rots = event.values.clone();
+
+                SensorManager.getRotationMatrixFromVector(mRotationMatrix , rots);
+                float[] orientation = new float[3];
+                SensorManager.getOrientation(mRotationMatrix, orientation);
+                mapsCameraBearing = orientation[0]* 57.2957795f;
+
+                break;
+            /*********************************************************************************/
         }
 
         if (mags != null && accels != null) {
@@ -77,14 +94,20 @@ public class DeviceOrientation implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     public void resume() {
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void pause() {
         mSensorManager.unregisterListener(this);
     }
+
+    /*******************************************************************************************/
+    public double getMapsCameraBearing() {
+        return mapsCameraBearing;
+    }
+    /*******************************************************************************************/
 
 }

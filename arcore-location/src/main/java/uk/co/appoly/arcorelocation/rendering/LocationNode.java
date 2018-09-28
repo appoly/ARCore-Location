@@ -1,7 +1,5 @@
 package uk.co.appoly.arcorelocation.rendering;
 
-import android.util.Log;
-
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
@@ -201,4 +199,10 @@ public class LocationNode extends AnchorNode {
     public void setGradualScalingMaxScale(float gradualScalingMaxScale) {
         this.gradualScalingMaxScale = gradualScalingMaxScale;
     }
+
+    /**************************************************************************/
+    public LocationMarker getLocationMarker() {
+        return locationMarker;
+    }
+    /**************************************************************************/
 }
