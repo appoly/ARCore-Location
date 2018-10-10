@@ -16,6 +16,7 @@ import uk.co.appoly.arcorelocation.LocationScene;
 public class DeviceOrientation implements SensorEventListener {
 
     private SensorManager mSensorManager;
+    private static final float ALPHA = 0.25f;
 
     // Gravity rotational data
     private float gravity[];
@@ -50,10 +51,10 @@ public class DeviceOrientation implements SensorEventListener {
 
         switch (event.sensor.getType()) {
             case Sensor.TYPE_MAGNETIC_FIELD:
-                mags = event.values.clone();
+                mags = lowPass(event.values.clone(),mags);
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                accels = event.values.clone();
+                accels = lowPass(event.values.clone(),accels);
                 break;
         }
 
@@ -85,6 +86,15 @@ public class DeviceOrientation implements SensorEventListener {
 
     public void pause() {
         mSensorManager.unregisterListener(this);
+    }
+
+    protected float[] lowPass( float[] input, float[] output ) {
+        if ( output == null ) return input;
+
+        for ( int i=0; i<input.length; i++ ) {
+            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        }
+        return output;
     }
 
 }
