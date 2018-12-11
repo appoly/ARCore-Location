@@ -201,6 +201,38 @@ public class LocationScene {
 
             for (int i = 0; i < mLocationMarkers.size(); i++) {
                 try {
+                    
+                    Vector3 point1, point2;
+                    point1 = mLocationMarkers.getWorldPosition(i);
+                    point2 = mLocationMarkers.getWorldPosition(i-1);
+                    Node line = new Node();
+
+                /* First, find the vector extending between the two points and define a look rotation in terms of this
+                    Vector. */
+
+                   final Vector3 difference = Vector3.subtract(point1, point2);
+                   final Vector3 directionFromTopToBottom = difference.normalized();
+                   final Quaternion rotationFromAToB =
+                   Quaternion.lookRotation(directionFromTopToBottom, Vector3.up());
+
+                    final Renderable[] lineRenderable = new Renderable[1];
+
+                   /* Then, create a rectangular prism, using ShapeFactory.makeCube() and use the difference vector
+                    to extend to the necessary length.  */
+
+                    MaterialFactory.makeOpaqueWithColor(this, color)
+                     .thenAccept(
+                     material -> {
+                      lineRenderable[0] = ShapeFactory.makeCube(new Vector3(.01f, .01f, difference.length()),
+                              Vector3.zero(), material);
+                    });
+
+                   /* Last, set the world rotation of the node to the rotation calculated earlier and set the world position to
+                    the midpoint between the given points . */
+                    line.setParent(anchorNode);
+                    line.setRenderable(lineRenderable[0]);
+                    line.setWorldPosition(Vector3.add(point1, point2).scaled(.5f));
+                    line.setWorldRotation(rotationFromAToB);
 
                     int markerDistance = (int) Math.round(
                             LocationUtils.distance(
