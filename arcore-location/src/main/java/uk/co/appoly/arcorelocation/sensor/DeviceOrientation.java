@@ -38,8 +38,14 @@ public class DeviceOrientation implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            processSensorOrientation(event.values);
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_GAME_ROTATION_VECTOR:
+            case Sensor.TYPE_ROTATION_VECTOR:
+                processSensorOrientation(event.values);
+                break;
+            default:
+                Log.e("DeviceOrientation", "Sensor event type not supported");
+                break;
         }
     }
 
@@ -83,8 +89,7 @@ public class DeviceOrientation implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         if (accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-            Log.d("brako", "unreliable compass");
-            return;
+            Log.w("DeviceOrientation", "Orientation compass unreliable");
         }
     }
 

@@ -165,8 +165,8 @@ public class LocationNode extends AnchorNode {
                     scale = (float) Math.sqrt(direction.x * direction.x
                             + direction.y * direction.y + direction.z * direction.z);
                     float gradualScale = gradualScalingMaxScale - gradualScalingMinScale;
-                    gradualScale +=  gradualScale / renderDistance * markerDistance;
-                    scale *= gradualScale;
+                    gradualScale = gradualScalingMaxScale - (gradualScale / renderDistance * markerDistance);
+                    scale *= Math.max(gradualScale, gradualScalingMinScale);
                     break;
             }
 
