@@ -1,6 +1,7 @@
 package uk.co.appoly.arcorelocation;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -19,14 +20,15 @@ public class DeviceLocation implements LocationListener {
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public Location currentBestLocation;
-    private LocationManager locationManager ;
+    private LocationManager locationManager;
     private String provider;
+    private Activity activity;
 
     public DeviceLocation() {
 
         try {
             // Getting LocationManager object
-            locationManager = (LocationManager) LocationScene.mContext.getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
             // Creating an empty criteria object
             Criteria criteria = new Criteria();
 
@@ -42,20 +44,21 @@ public class DeviceLocation implements LocationListener {
                 if (location != null)
                     onLocationChanged(location);
                 else
-                    Toast.makeText(LocationScene.mContext, "Location can't be retrieved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Location can't be retrieved", Toast.LENGTH_SHORT).show();
 
             } else {
-                Toast.makeText(LocationScene.mContext, "No Provider Found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "No Provider Found", Toast.LENGTH_SHORT).show();
             }
 
-        } catch(SecurityException e) {
-            Toast.makeText(LocationScene.mContext, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
+        } catch (SecurityException e) {
+            Toast.makeText(activity, "Enable location permissions from settings", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
      * Only replaces current location if this reading is
      * more likely to be accurate
+     *
      * @param location
      * @return
      */
@@ -110,7 +113,7 @@ public class DeviceLocation implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if(isBetterLocation(location)) {
+        if (isBetterLocation(location)) {
             currentBestLocation = location;
         }
     }
@@ -130,14 +133,14 @@ public class DeviceLocation implements LocationListener {
 
     public void permissionsCheck() {
         if (ActivityCompat.checkSelfPermission(
-                LocationScene.mContext,
+                activity,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                ) {
+        ) {
 
             // Check Permissions Now
             ActivityCompat.requestPermissions(
-                    LocationScene.mActivity,
-                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                    activity,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
         }
     }

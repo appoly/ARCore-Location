@@ -51,6 +51,10 @@ public class LocationNode extends AnchorNode {
         this.scaleModifier = scaleModifier;
     }
 
+    public LocationMarker getLocationMarker() {
+        return locationMarker;
+    }
+
     public LocationNodeRender getRenderEvent() {
         return renderEvent;
     }
@@ -108,7 +112,6 @@ public class LocationNode extends AnchorNode {
             // Compute the straight-line distance.
             setDistanceInAR(Math.sqrt(dx * dx + dy * dy + dz * dz));
 
-
             if (locationScene.shouldOffsetOverlapping()) {
                 if (locationScene.mArSceneView.getScene().overlapTestAll(n).size() > 0) {
                     setHeight(getHeight() + 1.2F);
@@ -116,19 +119,17 @@ public class LocationNode extends AnchorNode {
             }
         }
 
-        if(!locationScene.minimalRefreshing())
+        if (!locationScene.minimalRefreshing())
             scaleAndRotate();
 
 
         if (renderEvent != null) {
-            if(this.isTracking() && this.isActive() && this.isEnabled())
+            if (this.isTracking() && this.isActive() && this.isEnabled())
                 renderEvent.render(this);
         }
-
     }
 
     public void scaleAndRotate() {
-
         for (Node n : getChildren()) {
             int markerDistance = (int) Math.ceil(
                     LocationUtils.distance(
@@ -139,7 +140,6 @@ public class LocationNode extends AnchorNode {
                             0,
                             0)
             );
-
             setDistance(markerDistance);
 
             // Limit the distance of the Anchor within the scene.
@@ -149,40 +149,34 @@ public class LocationNode extends AnchorNode {
                 renderDistance = locationScene.getDistanceLimit();
 
             float scale = 1F;
+            final Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
+            Vector3 direction = Vector3.subtract(cameraPosition, n.getWorldPosition());
 
             switch (scalingMode) {
-
-                // Make sure marker stays the same size on screen, no matter the distance
                 case FIXED_SIZE_ON_SCREEN:
-                    scale = 0.5F * (float) renderDistance;
-
-                    // Distant markers a little smaller
-                    if (markerDistance > 3000)
-                        scale *= 0.75F;
-
+                    scale = (float) Math.sqrt(direction.x * direction.x
+                            + direction.y * direction.y + direction.z * direction.z);
                     break;
-
                 case GRADUAL_TO_MAX_RENDER_DISTANCE:
                     float scaleDifference = gradualScalingMaxScale - gradualScalingMinScale;
                     scale = (gradualScalingMinScale + ((locationScene.getDistanceLimit() - markerDistance) * (scaleDifference / locationScene.getDistanceLimit()))) * renderDistance;
                     break;
+                case GRADUAL_FIXED_SIZE:
+                    scale = (float) Math.sqrt(direction.x * direction.x
+                            + direction.y * direction.y + direction.z * direction.z);
+                    float gradualScale = gradualScalingMaxScale - gradualScalingMinScale;
+                    gradualScale +=  gradualScale / renderDistance * markerDistance;
+                    scale *= gradualScale;
+                    break;
             }
-
 
             scale *= scaleModifier;
 
-            Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
-            Vector3 nodePosition = n.getWorldPosition();
+            //Log.d("LocationScene", "scale " + scale);
             n.setWorldPosition(new Vector3(n.getWorldPosition().x, getHeight(), n.getWorldPosition().z));
-            Vector3 direction = Vector3.subtract(cameraPosition, nodePosition);
             Quaternion lookRotation = Quaternion.lookRotation(direction, Vector3.up());
-
             n.setWorldRotation(lookRotation);
-            //locationMarker.node.setWorldScale(new Vector3(scale, scale, scale));
             n.setWorldScale(new Vector3(scale, scale, scale));
-
-
-
         }
     }
 

@@ -5,9 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
-
-import uk.co.appoly.arcorelocation.LocationScene;
+import android.util.Log;
+import android.view.Surface;
+import android.view.WindowManager;
 
 /**
  * Created by John on 02/03/2018.
@@ -15,86 +15,86 @@ import uk.co.appoly.arcorelocation.LocationScene;
 
 public class DeviceOrientation implements SensorEventListener {
 
-    private SensorManager mSensorManager;
-    private static final float ALPHA = 0.25f;
-
-    // Gravity rotational data
-    private float gravity[];
-
-    // Magnetic rotational data
-    private float magnetic[];
-    private float accels[] = new float[3];
-    private float mags[] = new float[3];
-    private float[] values = new float[3];
-    private float azimuth;
     public float pitch;
     public float roll;
-    private LocationScene locationScene;
+    private WindowManager windowManager;
+    private SensorManager mSensorManager;
+    private float orientation = 0f;
 
-    // North
-    public float currentDegree = 0f;
+    public DeviceOrientation(Context context) {
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    }
 
-    public DeviceOrientation(LocationScene locationScene) {
-        this.locationScene = locationScene;
-        mSensorManager = (SensorManager) locationScene.mContext.getSystemService(Context.SENSOR_SERVICE);
+    /**
+     * Gets the device orientation in degrees from the azimuth (clockwise)
+     *
+     * @return orientation [0-360] in degrees
+     */
+    public float getOrientation() {
+        return orientation;
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        // Get the device heading
-        float degree = -Math.round( event.values[0] );
-
-        // Temporary fix until we can work out what's causing the anomalies
-        if(degree != 1.0 && degree != 0 && degree != 2.0 && degree != -1.0)
-            currentDegree = degree;
-
-        switch (event.sensor.getType()) {
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                mags = lowPass(event.values.clone(),mags);
-                break;
-            case Sensor.TYPE_ACCELEROMETER:
-                accels = lowPass(event.values.clone(),accels);
-                break;
-        }
-
-        if (mags != null && accels != null) {
-            gravity = new float[9];
-            magnetic = new float[9];
-            SensorManager.getRotationMatrix(gravity, magnetic, accels, mags);
-            float[] outGravity = new float[9];
-            SensorManager.remapCoordinateSystem(gravity, SensorManager.AXIS_X,SensorManager.AXIS_Z, outGravity);
-            SensorManager.getOrientation(outGravity, values);
-
-            azimuth = values[0] * 57.2957795f;
-            pitch = values[1] * 57.2957795f;
-            roll = values[2] * 57.2957795f;
-            mags = null;
-            accels = null;
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            processSensorOrientation(event.values);
         }
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
+    private void processSensorOrientation(float[] rotation) {
+        float[] rotationMatrix = new float[9];
+        SensorManager.getRotationMatrixFromVector(rotationMatrix, rotation);
+        final int worldAxisX;
+        final int worldAxisY;
+
+        switch (windowManager.getDefaultDisplay().getRotation()) {
+            case Surface.ROTATION_90:
+                worldAxisX = SensorManager.AXIS_Z;
+                worldAxisY = SensorManager.AXIS_MINUS_X;
+                break;
+            case Surface.ROTATION_180:
+                worldAxisX = SensorManager.AXIS_MINUS_X;
+                worldAxisY = SensorManager.AXIS_MINUS_Z;
+                break;
+            case Surface.ROTATION_270:
+                worldAxisX = SensorManager.AXIS_MINUS_Z;
+                worldAxisY = SensorManager.AXIS_X;
+                break;
+            case Surface.ROTATION_0:
+            default:
+                worldAxisX = SensorManager.AXIS_X;
+                worldAxisY = SensorManager.AXIS_Z;
+                break;
+        }
+        float[] adjustedRotationMatrix = new float[9];
+        SensorManager.remapCoordinateSystem(rotationMatrix, worldAxisX,
+                worldAxisY, adjustedRotationMatrix);
+
+        // azimuth/pitch/roll
+        float[] orientation = new float[3];
+        SensorManager.getOrientation(adjustedRotationMatrix, orientation);
+
+        this.orientation = ((float) Math.toDegrees(orientation[0]) + 360f) % 360f;
+    }
+
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        if (accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            Log.d("brako", "unreliable compass");
+            return;
+        }
+    }
 
     public void resume() {
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void pause() {
         mSensorManager.unregisterListener(this);
     }
-
-    protected float[] lowPass( float[] input, float[] output ) {
-        if ( output == null ) return input;
-
-        for ( int i=0; i<input.length; i++ ) {
-            output[i] = output[i] + ALPHA * (input[i] - output[i]);
-        }
-        return output;
-    }
-
 }
