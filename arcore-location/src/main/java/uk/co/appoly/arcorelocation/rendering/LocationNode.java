@@ -1,13 +1,15 @@
 package uk.co.appoly.arcorelocation.rendering;
 
-import android.util.Log;
-
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.FrameTime;
+import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.collision.Ray;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
+
+import java.util.ArrayList;
 
 import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.LocationScene;
@@ -110,11 +112,34 @@ public class LocationNode extends AnchorNode {
             float dz = cameraPosition.z - nodePosition.z;
 
             // Compute the straight-line distance.
-            setDistanceInAR(Math.sqrt(dx * dx + dy * dy + dz * dz));
+            double distanceInAR = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            setDistanceInAR(distanceInAR);
 
             if (locationScene.shouldOffsetOverlapping()) {
                 if (locationScene.mArSceneView.getScene().overlapTestAll(n).size() > 0) {
                     setHeight(getHeight() + 1.2F);
+                }
+            }
+
+            if (locationScene.shouldRemoveOverlapping()) {
+                Ray ray = new Ray();
+                ray.setOrigin(cameraPosition);
+
+                float xDelta = (float) (distanceInAR * Math.sin(Math.PI / 12)); //15 degrees
+                Vector3 cameraLeft = getScene().getCamera().getLeft().normalized();
+
+                Vector3 left = Vector3.add(nodePosition, cameraLeft.scaled(xDelta));
+                Vector3 center = nodePosition;
+                Vector3 right = Vector3.add(nodePosition, cameraLeft.scaled(-xDelta));
+
+                boolean isOverlapping = isOverlapping(n, ray, left, cameraPosition)
+                        || isOverlapping(n, ray, center, cameraPosition)
+                        || isOverlapping(n, ray, right, cameraPosition);
+
+                if (isOverlapping) {
+                    setEnabled(false);
+                } else {
+                    setEnabled(true);
                 }
             }
         }
@@ -127,6 +152,19 @@ public class LocationNode extends AnchorNode {
             if (this.isTracking() && this.isActive() && this.isEnabled())
                 renderEvent.render(this);
         }
+    }
+
+    private boolean isOverlapping(Node n, Ray ray, Vector3 target, Vector3 cameraPosition) {
+        Vector3 nodeDirection = Vector3.subtract(target, cameraPosition);
+        ray.setDirection(nodeDirection);
+
+        ArrayList<HitTestResult> hitTestResults = locationScene.mArSceneView.getScene().hitTestAll(ray);
+        if (hitTestResults.size() > 0) {
+            HitTestResult closestHit = hitTestResults.get(0);
+            // if closest hit is not the current node, it is hidden behind another node that is closer
+            return closestHit != null && closestHit.getNode() != n;
+        }
+        return false;
     }
 
     public void scaleAndRotate() {

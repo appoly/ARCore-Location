@@ -38,6 +38,7 @@ public class LocationScene {
     // They will auto scale, but this helps prevents rendering issues
     private int distanceLimit = 30;
     private boolean offsetOverlapping = false;
+    private boolean removeOverlapping = false;
     // Bearing adjustment. Can be set to calibrate with true north
     private int bearingAdjustment = 0;
     private String TAG = "LocationScene";
@@ -177,6 +178,10 @@ public class LocationScene {
         return offsetOverlapping;
     }
 
+    public boolean shouldRemoveOverlapping() {
+        return removeOverlapping;
+    }
+
     /**
      * Attempts to raise markers vertically when they overlap.
      * Needs work!
@@ -185,6 +190,16 @@ public class LocationScene {
      */
     public void setOffsetOverlapping(boolean offsetOverlapping) {
         this.offsetOverlapping = offsetOverlapping;
+    }
+
+
+    /**
+     * Remove farthest markers when they overlap
+     *
+     * @param removeOverlapping
+     */
+    public void setRemoveOverlapping(boolean removeOverlapping) {
+        this.removeOverlapping = removeOverlapping;
     }
 
     public void processFrame(Frame frame) {
