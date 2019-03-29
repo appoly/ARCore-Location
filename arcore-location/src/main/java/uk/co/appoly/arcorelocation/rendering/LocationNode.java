@@ -160,7 +160,16 @@ public class LocationNode extends AnchorNode {
 
         ArrayList<HitTestResult> hitTestResults = locationScene.mArSceneView.getScene().hitTestAll(ray);
         if (hitTestResults.size() > 0) {
-            HitTestResult closestHit = hitTestResults.get(0);
+
+            HitTestResult closestHit = null;
+            for (HitTestResult hit : hitTestResults) {
+                //Get the closest hit on enabled Node
+                if (hit.getNode() != null && hit.getNode().isEnabled()) {
+                    closestHit = hit;
+                    break;
+                }
+            }
+
             // if closest hit is not the current node, it is hidden behind another node that is closer
             return closestHit != null && closestHit.getNode() != n;
         }

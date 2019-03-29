@@ -200,6 +200,13 @@ public class LocationScene {
      */
     public void setRemoveOverlapping(boolean removeOverlapping) {
         this.removeOverlapping = removeOverlapping;
+
+//        for (LocationMarker mLocationMarker : mLocationMarkers) {
+//            LocationNode anchorNode = mLocationMarker.anchorNode;
+//            if (anchorNode != null) {
+//                anchorNode.setEnabled(true);
+//            }
+//        }
     }
 
     public void processFrame(Frame frame) {
