@@ -141,6 +141,12 @@ public class DeviceLocation implements LocationListener {
         }
     }
 
+    private void stopUpdatingLocation() {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.removeUpdates(this);
+        isLocationManagerUpdatingLocation = false;
+    }
+
 
     private long getLocationAge(Location newLocation) {
         long locationAge;
@@ -253,4 +259,11 @@ public class DeviceLocation implements LocationListener {
     }
 
 
+    public void pause() {
+        stopUpdatingLocation();
+    }
+
+    public void resume() {
+        startUpdatingLocation();
+    }
 }

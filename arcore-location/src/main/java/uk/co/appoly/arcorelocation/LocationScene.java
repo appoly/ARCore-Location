@@ -365,6 +365,7 @@ public class LocationScene {
      */
     public void resume() {
         deviceOrientation.resume();
+        deviceLocation.resume();
     }
 
     /**
@@ -372,6 +373,7 @@ public class LocationScene {
      */
     public void pause() {
         deviceOrientation.pause();
+        deviceLocation.pause();
     }
 
     void startCalculationTask() {
