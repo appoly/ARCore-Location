@@ -125,7 +125,7 @@ public class LocationNode extends AnchorNode {
                 Ray ray = new Ray();
                 ray.setOrigin(cameraPosition);
 
-                float xDelta = (float) (distanceInAR * Math.sin(Math.PI / 12)); //15 degrees
+                float xDelta = (float) (distanceInAR * Math.sin(Math.PI / 15)); //12 degrees
                 Vector3 cameraLeft = getScene().getCamera().getLeft().normalized();
 
                 Vector3 left = Vector3.add(nodePosition, cameraLeft.scaled(xDelta));
