@@ -31,7 +31,7 @@ allprojects {
 Add the ARCore-Location dependency. Replace `1.0.6` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
 ```
 dependencies {
-    compile 'com.github.appoly:ARCore-Location:1.0.6'
+    implementation 'com.github.appoly:ARCore-Location:1.0.6'
 }
 ```
 
