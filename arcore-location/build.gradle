@@ -8,7 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
         // NOTE: Do not place your application dependencies here; they belong
@@ -31,13 +31,13 @@ allprojects {
 
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
 
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion 24
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -51,18 +51,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //implementation 'com.google.ar:core:1.2.0'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation "com.google.ar.sceneform:core:1.7.0"
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.7.0"
+    implementation 'com.android.support:support-v4:28.0.0'
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-
-    implementation "com.google.ar.sceneform:core:1.0.0"
-    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.0.0"
 }
 

@@ -1,5 +1,6 @@
 package uk.co.appoly.arcorelocation;
 
+import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 
 import uk.co.appoly.arcorelocation.rendering.LocationNode;
@@ -143,7 +144,8 @@ public class LocationMarker {
     public enum ScalingMode {
         FIXED_SIZE_ON_SCREEN,
         NO_SCALING,
-        GRADUAL_TO_MAX_RENDER_DISTANCE
+        GRADUAL_TO_MAX_RENDER_DISTANCE,
+        GRADUAL_FIXED_SIZE
     }
 
 }

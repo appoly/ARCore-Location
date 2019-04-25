@@ -1,5 +1,6 @@
 package uk.co.appoly.arcorelocation.sensor;
 
+import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -36,11 +37,11 @@ public class DeviceLocation implements LocationListener {
     private LocationManager locationManager;
     private LocationScene locationScene;
     private int minimumAccuracy = 25;
+    private Context context;
 
-    public DeviceLocation(LocationScene locationScene) {
+    public DeviceLocation(Context context, LocationScene locationScene) {
+        this.context = context.getApplicationContext();
         this.locationScene = locationScene;
-
-
         isLocationManagerUpdatingLocation = false;
         locationList = new ArrayList<>();
         noAccuracyLocationList = new ArrayList<>();
@@ -102,7 +103,7 @@ public class DeviceLocation implements LocationListener {
             inaccurateLocationList.clear();
             kalmanNGLocationList.clear();
 
-            LocationManager locationManager = (LocationManager) locationScene.mContext.getSystemService(locationScene.mContext.LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
             //Exception thrown when GPS or Network provider were not available on the user's device.
             try {
@@ -140,6 +141,12 @@ public class DeviceLocation implements LocationListener {
         }
     }
 
+    private void stopUpdatingLocation() {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.removeUpdates(this);
+        isLocationManagerUpdatingLocation = false;
+    }
+
 
     private long getLocationAge(Location newLocation) {
         long locationAge;
@@ -169,14 +176,14 @@ public class DeviceLocation implements LocationListener {
             oldLocationList.add(location);
 
             if (locationScene.isDebugEnabled())
-                Toast.makeText(locationScene.mContext, "Rejected: old", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Rejected: old", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (location.getAccuracy() <= 0) {
             Log.d(TAG, "Latitidue and longitude values are invalid.");
             if (locationScene.isDebugEnabled())
-                Toast.makeText(locationScene.mContext, "Rejected: invalid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Rejected: invalid", Toast.LENGTH_SHORT).show();
             noAccuracyLocationList.add(location);
             return false;
         }
@@ -187,7 +194,7 @@ public class DeviceLocation implements LocationListener {
             Log.d(TAG, "Accuracy is too low.");
             inaccurateLocationList.add(location);
             if (locationScene.isDebugEnabled())
-                Toast.makeText(locationScene.mContext, "Rejected: innacurate", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Rejected: innacurate", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -223,7 +230,7 @@ public class DeviceLocation implements LocationListener {
 
             kalmanNGLocationList.add(location);
             if (locationScene.isDebugEnabled())
-                Toast.makeText(locationScene.mContext, "Rejected: kalman filter", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Rejected: kalman filter", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             kalmanFilter.consecutiveRejectCount = 0;
@@ -252,4 +259,11 @@ public class DeviceLocation implements LocationListener {
     }
 
 
+    public void pause() {
+        stopUpdatingLocation();
+    }
+
+    public void resume() {
+        startUpdatingLocation();
+    }
 }
