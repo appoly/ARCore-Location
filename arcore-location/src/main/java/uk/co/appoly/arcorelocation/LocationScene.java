@@ -335,7 +335,11 @@ public class LocationScene {
                 marker.anchorNode.setScalingMode(marker.getScalingMode());
                 marker.anchorNode.setGradualScalingMaxScale(marker.getGradualScalingMaxScale());
                 marker.anchorNode.setGradualScalingMinScale(marker.getGradualScalingMinScale());
-                marker.anchorNode.setHeight(marker.getHeight());
+
+                // Locations further than RENDER_DISTANCE are remapped to be rendered closer.
+                // => height differential also has to ensure the remap is correct
+                float renderHeight = RENDER_DISTANCE * marker.getHeight() / markerDistance;
+                marker.anchorNode.setHeight(renderHeight);
 
                 if (minimalRefreshing)
                     marker.anchorNode.scaleAndRotate();
