@@ -338,8 +338,12 @@ public class LocationScene {
 
                 // Locations further than RENDER_DISTANCE are remapped to be rendered closer.
                 // => height differential also has to ensure the remap is correct
-                float renderHeight = RENDER_DISTANCE * marker.getHeight() / markerDistance;
-                marker.anchorNode.setHeight(renderHeight);
+                if (markerDistance > RENDER_DISTANCE) {
+                    float renderHeight = RENDER_DISTANCE * marker.getHeight() / markerDistance;
+                    marker.anchorNode.setHeight(renderHeight);
+                } else {
+                    marker.anchorNode.setHeight(marker.getHeight());
+                }
 
                 if (minimalRefreshing)
                     marker.anchorNode.scaleAndRotate();
