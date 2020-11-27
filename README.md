@@ -18,7 +18,7 @@ Add the JitPack repository to your build file
 
 #### Step 1. 
 Add JitPack in your root build.gradle at the end of repositories:
-```
+```gradle
 allprojects {
 	repositories {
 		...
@@ -29,7 +29,7 @@ allprojects {
 
 #### Step 2. 
 Add the ARCore-Location dependency. Replace `1.0.6` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
-```
+```gradle
 dependencies {
     implementation 'com.github.appoly:ARCore-Location:1.0.6'
 }
@@ -42,14 +42,14 @@ To implement this library into one of your AR projects, do the following.
 
 #### Step 1. 
 Inside your AR Activity, you should create a new variable called `locationScene`, which will be the instance of this library.
-```
+```java
 private LocationScene locationScene;
 ```
 
 #### Step 2.
 
 Set up your renderables in onCreate
-```
+```java
 CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
         .setSource(this, R.raw.andy)
         .build();
@@ -76,7 +76,7 @@ CompletableFuture.allOf(andy)
 
 #### Step 3.
 Both your LocationScene, and various location markers should be instantiated in your onCreate method. Assuming you already have a arSceneView - the LocationScene and LocationMarkers can be set-up in the update listener.
-```
+```java
 arSceneView
 .getScene()
 .setOnUpdateListener(
@@ -102,7 +102,7 @@ frameTime -> {
 
 Where `getAndy()` is the following (also showing a onTapListener):
 
-```
+```java
 private Node getAndy() {
     Node base = new Node();
     base.setRenderable(andyRenderable);
@@ -119,7 +119,7 @@ private Node getAndy() {
 
 #### Permissions
 This library requires permission to use the device Camera and Fine Location. You should set this up in `AndroidManifest.xml`. If you're unfamiliar with requesting permissions, have a look at HelloArActivity in our example project.
-```
+```manifest
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
