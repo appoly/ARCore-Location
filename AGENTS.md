@@ -6,7 +6,8 @@ Notes for coding agents and contributors. For what the library does and how to u
 
 - `arcore-location/` is the core library. `GeoTracker` drives everything; `geo/WorldAlignment` holds the placement estimate; `sensor/` has the location and heading sources.
 - `arcore-location-sceneform/` adds `LocationScene` and `LocationMarker` for Sceneform.
-- `example/` is a demo app using the Sceneform module.
+- `example-core/` is a demo app using the core module with ARCore directly: OpenGL camera background, one anchor per target, and Android views projected over the camera.
+- `example/` is the same demo using the Sceneform module.
 
 ## Build and test
 

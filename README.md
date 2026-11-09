@@ -117,13 +117,19 @@ locationScene.addMarker(marker);
 
 AI assistants often suggest 1.x code, which no longer compiles. Point yours at [`llms.txt`](llms.txt), a short summary of the current API. If you're working on the library itself, [`AGENTS.md`](AGENTS.md) has the build commands and project rules.
 
-## Example app
+## Example apps
 
-The `example` module uses the Sceneform module. It shows labels at a few landmarks around the world, plus coloured spheres 20 metres north, east, south and west of where you start. To try the Geospatial API, add `arcore.apiKey=YOUR_KEY` to `local.properties`.
+Both examples label a few landmarks around the world and four points 20 metres north, east, south and west of where you start.
+
+`example-core` uses the core module with ARCore directly. It draws the camera image with OpenGL, keeps one anchor per target, and positions ordinary Android views over the camera by projecting each anchor onto the screen. Start here.
+
+`example` uses the Sceneform module, for comparison if you're upgrading a Sceneform app.
 
 ```sh
-./gradlew :example:installDebug
+./gradlew :example-core:installDebug
 ```
+
+To try the Geospatial API in either, add `arcore.apiKey=YOUR_KEY` to `local.properties`.
 
 ## Building
 

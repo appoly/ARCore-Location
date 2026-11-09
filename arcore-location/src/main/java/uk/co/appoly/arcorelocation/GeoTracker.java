@@ -2,9 +2,10 @@ package uk.co.appoly.arcorelocation;
 
 import android.content.Context;
 import android.hardware.GeomagneticField;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -39,10 +40,13 @@ import uk.co.appoly.arcorelocation.sensor.RotationVectorHeadingSource;
  * Geospatial poses, which are accurate to a few metres and degrees (better with VPS coverage).
  * Otherwise it combines GPS and compass readings with ARCore's motion tracking.</p>
  *
- * <p>Use from the main thread. Register it with a {@link LifecycleOwner}, or call {@link #start()}
- * and {@link #stop()} from {@code onResume} and {@code onPause}.</p>
+ * <p>Register it with a {@link LifecycleOwner}, or call {@link #start()} and {@link #stop()} from
+ * {@code onResume} and {@code onPause}.</p>
+ *
+ * <p>The tracker is thread safe, so {@link #update} and {@link #place} can be called from a GL
+ * render thread while sensor updates arrive on the main thread. {@link Listener} methods are
+ * always called on the main thread.</p>
  */
-@MainThread
 public final class GeoTracker implements DefaultLifecycleObserver {
 
     /** Overall tracking state. */
@@ -93,6 +97,7 @@ public final class GeoTracker implements DefaultLifecycleObserver {
     private final LocationSource locationSource;
     private final HeadingSource headingSource;
     private final CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<>();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private boolean started;
     private boolean useGeospatial = true;
@@ -131,29 +136,37 @@ public final class GeoTracker implements DefaultLifecycleObserver {
     private final LocationSource.Listener locationListener = new LocationSource.Listener() {
         @Override
         public void onLocation(@NonNull LocationSample sample) {
-            locationUnavailableReason = null;
-            pendingLocation = sample;
-            updateDeclination(sample.getCoordinate());
+            synchronized (GeoTracker.this) {
+                locationUnavailableReason = null;
+                pendingLocation = sample;
+                updateDeclination(sample.getCoordinate());
+            }
         }
 
         @Override
         public void onLocationUnavailable(@NonNull String reason) {
-            locationUnavailableReason = reason;
-            refreshStatus(SystemClock.elapsedRealtime());
+            synchronized (GeoTracker.this) {
+                locationUnavailableReason = reason;
+                refreshStatus(SystemClock.elapsedRealtime());
+            }
         }
     };
 
     private final HeadingSource.Listener headingListener = new HeadingSource.Listener() {
         @Override
         public void onHeading(@NonNull HeadingSample sample) {
-            headingUnavailableReason = null;
-            pendingHeading = sample;
+            synchronized (GeoTracker.this) {
+                headingUnavailableReason = null;
+                pendingHeading = sample;
+            }
         }
 
         @Override
         public void onHeadingUnavailable(@NonNull String reason) {
-            headingUnavailableReason = reason;
-            refreshStatus(SystemClock.elapsedRealtime());
+            synchronized (GeoTracker.this) {
+                headingUnavailableReason = reason;
+                refreshStatus(SystemClock.elapsedRealtime());
+            }
         }
     };
 
@@ -169,7 +182,7 @@ public final class GeoTracker implements DefaultLifecycleObserver {
     }
 
     /** Starts location and heading updates. Safe to call repeatedly. */
-    public void start() {
+    public synchronized void start() {
         if (started) {
             return;
         }
@@ -180,7 +193,7 @@ public final class GeoTracker implements DefaultLifecycleObserver {
     }
 
     /** Stops location and heading updates. Placement estimates are kept for when it restarts. */
-    public void stop() {
+    public synchronized void stop() {
         if (!started) {
             return;
         }
@@ -196,7 +209,7 @@ public final class GeoTracker implements DefaultLifecycleObserver {
      * Discards all placement estimates. Call this if the ARCore session is replaced, because the
      * new session has a different world frame.
      */
-    public void reset() {
+    public synchronized void reset() {
         alignment.reset();
         pendingHeading = null;
         pendingLocation = null;
@@ -212,7 +225,7 @@ public final class GeoTracker implements DefaultLifecycleObserver {
      * Feeds one ARCore frame into the tracker. Call this once per frame, after
      * {@code Session.update()}, before placing content.
      */
-    public void update(@NonNull Session session, @NonNull Frame frame) {
+    public synchronized void update(@NonNull Session session, @NonNull Frame frame) {
         long now = SystemClock.elapsedRealtime();
         Camera camera = frame.getCamera();
         if (camera.getTrackingState() != TrackingState.TRACKING) {
@@ -247,7 +260,7 @@ public final class GeoTracker implements DefaultLifecycleObserver {
      * @return the placement, or {@code null} if the tracker is not ready yet
      */
     @Nullable
-    public GeoPlacement place(@NonNull GeoCoordinate target, @NonNull Pose cameraPose,
+    public synchronized GeoPlacement place(@NonNull GeoCoordinate target, @NonNull Pose cameraPose,
                               float maxRenderDistanceMetres, float heightOffsetMetres) {
         return GeoPlacement.compute(alignment, target, cameraPose.tx(), cameraPose.ty(), cameraPose.tz(),
                 maxRenderDistanceMetres, heightOffsetMetres);
@@ -255,76 +268,76 @@ public final class GeoTracker implements DefaultLifecycleObserver {
 
     /** Estimated location of a camera at {@code cameraPose}, or {@code null} if not ready. */
     @Nullable
-    public GeoCoordinate getCameraLocation(@NonNull Pose cameraPose) {
+    public synchronized GeoCoordinate getCameraLocation(@NonNull Pose cameraPose) {
         return alignment.worldToGeo(cameraPose.tx(), cameraPose.ty(), cameraPose.tz());
     }
 
     /** True once north and position have been estimated and {@link #place} returns results. */
-    public boolean isReady() {
+    public synchronized boolean isReady() {
         return alignment.isReady();
     }
 
     @NonNull
-    public Status getStatus() {
+    public synchronized Status getStatus() {
         return status;
     }
 
     @NonNull
-    public Source getSource() {
+    public synchronized Source getSource() {
         return source;
     }
 
     /** Why location is unavailable, when the status is {@link Status#LOCATION_UNAVAILABLE}. */
     @Nullable
-    public String getLocationUnavailableReason() {
+    public synchronized String getLocationUnavailableReason() {
         return locationUnavailableReason;
     }
 
     /** Why heading is unavailable, when the status is {@link Status#HEADING_UNAVAILABLE}. */
     @Nullable
-    public String getHeadingUnavailableReason() {
+    public synchronized String getHeadingUnavailableReason() {
         return headingUnavailableReason;
     }
 
     /** The most recent Earth state reported by ARCore, or {@code null} if Geospatial isn't in use. */
     @Nullable
-    public Earth.EarthState getEarthState() {
+    public synchronized Earth.EarthState getEarthState() {
         return lastEarthState;
     }
 
     /** Approximate 1-sigma accuracy of the current position estimate in metres, or {@code NaN}. */
-    public double getHorizontalAccuracyMetres() {
+    public synchronized double getHorizontalAccuracyMetres() {
         return alignment.getHorizontalAccuracyMetres();
     }
 
     /** Approximate 1-sigma accuracy of the current north estimate in degrees, or {@code NaN}. */
-    public double getHeadingAccuracyDegrees() {
+    public synchronized double getHeadingAccuracyDegrees() {
         return alignment.getNorthYawAccuracyDegrees();
     }
 
     /** The last location reading accepted from the location source, or {@code null}. */
     @Nullable
-    public LocationSample getLastAcceptedLocation() {
+    public synchronized LocationSample getLastAcceptedLocation() {
         return lastAcceptedLocation;
     }
 
     /** Whether to use ARCore's Geospatial API when the session has it enabled. Default true. */
-    public void setUseGeospatial(boolean useGeospatial) {
+    public synchronized void setUseGeospatial(boolean useGeospatial) {
         this.useGeospatial = useGeospatial;
     }
 
     /** Readings less accurate than this are ignored. Default 30 metres. */
-    public void setMinimumHorizontalAccuracyMetres(double metres) {
+    public synchronized void setMinimumHorizontalAccuracyMetres(double metres) {
         this.minimumHorizontalAccuracyMetres = metres;
     }
 
     /** Geospatial poses less accurate than this are ignored. Default 15 metres. */
-    public void setMaximumGeospatialAccuracyMetres(double metres) {
+    public synchronized void setMaximumGeospatialAccuracyMetres(double metres) {
         this.maximumGeospatialAccuracyMetres = metres;
     }
 
     /** Status becomes {@link Status#LOCATION_STALE} after this long without a reading. Default 30s. */
-    public void setMaxLocationAgeMillis(long millis) {
+    public synchronized void setMaxLocationAgeMillis(long millis) {
         this.maxLocationAgeMillis = millis;
     }
 
@@ -434,9 +447,11 @@ public final class GeoTracker implements DefaultLifecycleObserver {
                 pose.tx(), pose.ty(), pose.tz(), now);
         lastAcceptedLocation = sample;
         lastAcceptedLocationMillis = now;
-        for (Listener listener : listeners) {
-            listener.onLocationAccepted(this, sample);
-        }
+        mainHandler.post(() -> {
+            for (Listener listener : listeners) {
+                listener.onLocationAccepted(this, sample);
+            }
+        });
     }
 
     private boolean isTurningFast(double yaw, long now) {
@@ -486,9 +501,13 @@ public final class GeoTracker implements DefaultLifecycleObserver {
         if (newStatus != status || newSource != source) {
             status = newStatus;
             source = newSource;
-            for (Listener listener : listeners) {
-                listener.onStatusChanged(this, status, source);
-            }
+            Status notifiedStatus = newStatus;
+            Source notifiedSource = newSource;
+            mainHandler.post(() -> {
+                for (Listener listener : listeners) {
+                    listener.onStatusChanged(this, notifiedStatus, notifiedSource);
+                }
+            });
         }
     }
 }

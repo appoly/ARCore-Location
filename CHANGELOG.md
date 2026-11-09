@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `GeoTracker` is now thread safe, so apps that update ARCore on a GL render thread can call `update` and `place` there. Listener methods are always called on the main thread.
+- New `example-core` app showing the core module with ARCore directly, without Sceneform.
+- The README, `llms.txt` and wiki lead with the core module.
+
 ## 2.0.0
 
 A rewrite. See the [migration guide](https://github.com/appoly/ARCore-Location/wiki/Migrating-from-1.x).

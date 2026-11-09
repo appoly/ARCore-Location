@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ARCore-Location Core</string>
+    <string name="permissions_needed">Camera and precise location are needed to place content in the real world.</string>
+    <string name="approximate_location">Precise location is off, so markers may be far from their real positions.</string>
+    <string name="arcore_declined">This app needs Google Play Services for AR. Close and reopen the app to install it.</string>
+    <string name="arcore_not_supported">This device doesn\'t support ARCore.</string>
+    <string name="ar_unavailable">AR is not available on this device: %1$s</string>
+</resources>

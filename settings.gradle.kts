@@ -19,3 +19,4 @@ rootProject.name = "ARCore-Location"
 include(":arcore-location")
 include(":arcore-location-sceneform")
 include(":example")
+include(":example-core")

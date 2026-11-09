@@ -26,10 +26,10 @@ jobs:
         run: ./gradlew test
 
       - name: Lint
-        run: ./gradlew :arcore-location:lintRelease :arcore-location-sceneform:lintRelease :example:lintDebug
+        run: ./gradlew :arcore-location:lintRelease :arcore-location-sceneform:lintRelease :example:lintDebug :example-core:lintDebug
 
       - name: Build libraries and example
-        run: ./gradlew :arcore-location:assembleRelease :arcore-location-sceneform:assembleRelease :example:assembleDebug
+        run: ./gradlew :arcore-location:assembleRelease :arcore-location-sceneform:assembleRelease :example:assembleDebug :example-core:assembleDebug
 
       - name: Publish to Maven local (as JitPack does)
         run: ./gradlew :arcore-location:publishToMavenLocal :arcore-location-sceneform:publishToMavenLocal
