@@ -73,16 +73,23 @@ public class DeviceLocation implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-        startUpdatingLocation();
+        // Re-register so the criteria can select the best provider still available.
+        restartUpdatingLocation();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        try {
-            locationManager.requestLocationUpdates(provider, 0, 0, this);
-        } catch (SecurityException e) {
+        // Re-register so the criteria can select the newly enabled provider if it is better.
+        restartUpdatingLocation();
+    }
 
+    private void restartUpdatingLocation() {
+        if (!isLocationManagerUpdatingLocation) {
+            // Paused - resume() will register again.
+            return;
         }
+        stopUpdatingLocation();
+        startUpdatingLocation();
     }
 
     @Override
@@ -103,7 +110,7 @@ public class DeviceLocation implements LocationListener {
             inaccurateLocationList.clear();
             kalmanNGLocationList.clear();
 
-            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
             //Exception thrown when GPS or Network provider were not available on the user's device.
             try {
@@ -142,8 +149,9 @@ public class DeviceLocation implements LocationListener {
     }
 
     private void stopUpdatingLocation() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.removeUpdates(this);
+        if (locationManager != null) {
+            locationManager.removeUpdates(this);
+        }
         isLocationManagerUpdatingLocation = false;
     }
 

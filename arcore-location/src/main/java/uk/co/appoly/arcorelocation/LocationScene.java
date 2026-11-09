@@ -101,13 +101,13 @@ public class LocationScene {
     }
 
     public void setRefreshAnchorsAsLocationChanges(boolean refreshAnchorsAsLocationChanges) {
+        this.refreshAnchorsAsLocationChanges = refreshAnchorsAsLocationChanges;
         if (refreshAnchorsAsLocationChanges) {
             stopCalculationTask();
         } else {
             startCalculationTask();
         }
         refreshAnchors();
-        this.refreshAnchorsAsLocationChanges = refreshAnchorsAsLocationChanges;
     }
 
     /**
@@ -139,8 +139,9 @@ public class LocationScene {
      */
     public void setAnchorRefreshInterval(int anchorRefreshInterval) {
         this.anchorRefreshInterval = anchorRefreshInterval;
-        stopCalculationTask();
-        startCalculationTask();
+        if (!refreshAnchorsAsLocationChanges) {
+            startCalculationTask();
+        }
     }
 
     public void clearMarkers() {
@@ -381,17 +382,24 @@ public class LocationScene {
     public void resume() {
         deviceOrientation.resume();
         deviceLocation.resume();
+        if (!refreshAnchorsAsLocationChanges) {
+            startCalculationTask();
+        }
     }
 
     /**
      * Pause sensor services. Important!
+     * Also stops the anchor refresh timer so the Activity is not leaked.
      */
     public void pause() {
         deviceOrientation.pause();
         deviceLocation.pause();
+        stopCalculationTask();
     }
 
     void startCalculationTask() {
+        // Remove any pending run first so repeated calls never stack up multiple timers.
+        stopCalculationTask();
         anchorRefreshTask.run();
     }
 

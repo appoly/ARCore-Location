@@ -125,7 +125,7 @@ public class LocationActivity extends AppCompatActivity {
                             if (locationScene == null) {
                                 // If our locationScene object hasn't been setup yet, this is a good time to do it
                                 // We know that here, the AR components have been initiated.
-                                locationScene = new LocationScene(this, this, arSceneView);
+                                locationScene = new LocationScene(this, arSceneView);
 
                                 // Now lets create our location markers.
                                 // First, a layout
