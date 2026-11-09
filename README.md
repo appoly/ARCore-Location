@@ -130,6 +130,10 @@ The `example` module shows labels at a few landmarks around the world, plus colo
 ./gradlew :example:installDebug
 ```
 
+## Using a coding assistant
+
+AI assistants often suggest 1.x code, which no longer compiles. Point yours at [`llms.txt`](llms.txt), a short summary of the current API. If you're working on the library itself, [`AGENTS.md`](AGENTS.md) has the build commands and project rules.
+
 ## Building
 
 Use JDK 17 or later. `./gradlew test` runs the unit tests, and `./gradlew build` builds and lints everything.
