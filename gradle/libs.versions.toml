@@ -1,0 +1,30 @@
+# Library dependencies are deliberately not the newest releases: newer AndroidX versions would
+# force every app using this library to compile against a newer Android SDK.
+
+[versions]
+agp = "9.5.1"
+arcore = "1.57.0"
+playServicesLocation = "21.4.0"
+sceneform = "1.23.0"
+androidxAnnotation = "1.9.1"
+androidxCore = "1.16.0"
+androidxLifecycle = "2.9.4"
+appcompat = "1.7.1"
+material = "1.13.0"
+junit = "4.13.2"
+
+[libraries]
+arcore = { module = "com.google.ar:core", version.ref = "arcore" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+sceneform-core = { module = "com.gorisse.thomas.sceneform:core", version.ref = "sceneform" }
+sceneform-ux = { module = "com.gorisse.thomas.sceneform:ux", version.ref = "sceneform" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidxAnnotation" }
+androidx-core = { module = "androidx.core:core", version.ref = "androidxCore" }
+androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidxLifecycle" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+junit = { module = "junit:junit", version.ref = "junit" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "agp" }
