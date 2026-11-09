@@ -1,0 +1,4 @@
+jdk:
+  - openjdk17
+install:
+  - ./gradlew :arcore-location:publishToMavenLocal :arcore-location-sceneform:publishToMavenLocal
