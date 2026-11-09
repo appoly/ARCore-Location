@@ -1,5 +1,3 @@
-![Example Annotation](http://smegaupload.co.uk/up/uploads/arcorelocationbanner1524843962.png "ARCore location gps")
-
 # ARCoreLocation
 
 [Allows items to be placed within the AR world using real-world coordinates.](https://www.appoly.co.uk/arcore-location/)
@@ -28,10 +26,10 @@ allprojects {
 ```
 
 #### Step 2. 
-Add the ARCore-Location dependency. Replace `1.0.6` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
+Add the ARCore-Location dependency. Replace `1.2` with the latest release from the [releases tab on Github](https://github.com/appoly/ARCore-Location/releases)
 ```gradle
 dependencies {
-    implementation 'com.github.appoly:ARCore-Location:1.0.6'
+    implementation 'com.github.appoly:ARCore-Location:1.2'
 }
 ```
 
@@ -83,7 +81,7 @@ arSceneView
 frameTime -> {
 
     if (locationScene == null) {
-        locationScene = new LocationScene(this, this, arSceneView);
+        locationScene = new LocationScene(this, arSceneView);
         locationScene.mLocationMarkers.add(
                 new LocationMarker(
                         -0.119677,
