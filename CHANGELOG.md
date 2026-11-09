@@ -42,7 +42,7 @@ A rewrite. See the [migration guide](https://github.com/appoly/ARCore-Location/w
 
 ### Known issues
 
-- Sceneform's Filament libraries are not 16 KB page aligned, so apps that include `arcore-location-sceneform` and target Android 15 or later can't be published to Google Play. Use the core module with another renderer for new apps.
+- Sceneform's Filament libraries are not 16 KB page aligned, so apps that include `arcore-location-sceneform` and target Android 15 or later can't be published to Google Play. Use the core module for new apps.
 
 ## 1.3.1
 

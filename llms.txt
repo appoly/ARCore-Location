@@ -6,26 +6,12 @@ Version 2.0 is a rewrite and most 1.x code no longer compiles. Common 1.x patter
 
 ## Choosing a module
 
-- `com.github.appoly.ARCore-Location:arcore-location:2.0.0` is the core. It works with any renderer and is the right choice for new apps.
+- `com.github.appoly.ARCore-Location:arcore-location:2.0.0` is the core. It works with ARCore directly and any renderer, and is the right choice for new apps.
 - `com.github.appoly.ARCore-Location:arcore-location-sceneform:2.0.0` adds `LocationScene` and `LocationMarker` for Sceneform. Sceneform is archived and its native libraries are not 16 KB page aligned, so Google Play rejects apps targeting Android 15+ that include it. Use it only for apps that already use Sceneform.
 
 Both come from JitPack: add `maven("https://jitpack.io")` to the repositories in `settings.gradle.kts`.
 
-## Sceneform module
-
-```java
-LocationScene locationScene = new LocationScene(arSceneView);
-getLifecycle().addObserver(locationScene); // starts, stops and cleans up; no per-frame call needed
-
-LocationMarker marker = new LocationMarker(GeoCoordinate.of(51.50073, -0.12463), node) // latitude first
-        .setHeight(1.5f) // metres above the camera, or above the coordinate's altitude when known
-        .setOnRenderListener(m -> label.setText(Math.round(m.getDistanceMetres()) + " m"));
-locationScene.addMarker(marker);
-```
-
-Options: `LocationScene.setMaxRenderDistanceMetres` (default 25, keep under 30), `setOverlapMode(OverlapMode.NONE | HIDE | STACK)`, `setMaxVisibleMarkers`; `LocationMarker.setOnlyRenderWhenWithinMetres`, `setScalingMode(ScalingMode.FIXED_SIZE_ON_SCREEN | NO_SCALING | GRADUAL_FIXED_SIZE | GRADUAL_TO_MAX_RENDER_DISTANCE)`.
-
-## Core module with any renderer
+## Core module (start here)
 
 ```java
 GeoTracker tracker = new GeoTracker(context);
@@ -44,6 +30,20 @@ if (frame.getCamera().getTrackingState() == TrackingState.TRACKING && tracker.is
 
 `tracker.getStatus()` is one of `STOPPED`, `WAITING_FOR_LOCATION`, `WAITING_FOR_HEADING`, `LOCATION_UNAVAILABLE`, `HEADING_UNAVAILABLE`, `LOCATION_STALE` or `TRACKING`. `tracker.getSource()` is `GEOSPATIAL` or `GPS_AND_COMPASS`.
 
+## Sceneform module (existing Sceneform apps only)
+
+```java
+LocationScene locationScene = new LocationScene(arSceneView);
+getLifecycle().addObserver(locationScene); // starts, stops and cleans up; no per-frame call needed
+
+LocationMarker marker = new LocationMarker(GeoCoordinate.of(51.50073, -0.12463), node) // latitude first
+        .setHeight(1.5f) // metres above the camera, or above the coordinate's altitude when known
+        .setOnRenderListener(m -> label.setText(Math.round(m.getDistanceMetres()) + " m"));
+locationScene.addMarker(marker);
+```
+
+Options: `LocationScene.setMaxRenderDistanceMetres` (default 25, keep under 30), `setOverlapMode(OverlapMode.NONE | HIDE | STACK)`, `setMaxVisibleMarkers`; `LocationMarker.setOnlyRenderWhenWithinMetres`, `setScalingMode(ScalingMode.FIXED_SIZE_ON_SCREEN | NO_SCALING | GRADUAL_FIXED_SIZE | GRADUAL_TO_MAX_RENDER_DISTANCE)`.
+
 ## Permissions and Geospatial
 
 Request `ArLocationPermissions.REQUIRED_PERMISSIONS` (camera, fine and coarse location) with an Activity Result launcher before starting AR. To use the Geospatial API, enable `Config.GeospatialMode.ENABLED` in the session config when `session.isGeospatialModeSupported(...)` is true, and set up an ARCore API key or keyless authorisation in Google Cloud. Without them the library falls back to GPS and compass automatically.
@@ -56,5 +56,5 @@ Request `ArLocationPermissions.REQUIRED_PERMISSIONS` (camera, fine and coarse lo
 
 - [README](https://github.com/appoly/ARCore-Location/blob/main/README.md)
 - [Migrating from 1.x](https://github.com/appoly/ARCore-Location/wiki/Migrating-from-1.x)
-- [Using another renderer](https://github.com/appoly/ARCore-Location/wiki/Using-another-renderer)
+- [Getting started](https://github.com/appoly/ARCore-Location/wiki/Getting-started)
 - [Troubleshooting](https://github.com/appoly/ARCore-Location/wiki/Troubleshooting)

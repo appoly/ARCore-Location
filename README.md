@@ -5,20 +5,7 @@ Place AR content at real-world coordinates on Android. Give the library a latitu
 [![CI](https://github.com/appoly/ARCore-Location/actions/workflows/ci.yml/badge.svg)](https://github.com/appoly/ARCore-Location/actions/workflows/ci.yml)
 [![JitPack](https://jitpack.io/v/appoly/ARCore-Location.svg)](https://jitpack.io/#appoly/ARCore-Location)
 
-Version 2.0 is a rewrite. If you're upgrading from 1.x, read the [migration guide](https://github.com/appoly/ARCore-Location/wiki/Migrating-from-1.x) first; most method names have changed and `LocationMarker` now takes latitude before longitude.
-
-## Modules
-
-| Module | What it is |
-| --- | --- |
-| `arcore-location` | The core. Turns coordinates into ARCore world positions. Depends on ARCore and Google Play services only, so you can use it with any renderer. |
-| `arcore-location-sceneform` | `LocationScene` and `LocationMarker` for [Sceneform](https://github.com/sceneview/sceneform-android). Handles anchors, scaling, billboarding and overlapping markers for you. |
-
-### A note on Sceneform
-
-Google archived Sceneform in 2020, and the community fork this module uses was archived in 2024. Its bundled Filament libraries aren't aligned for 16 KB memory pages, so Google Play won't accept new apps or updates that target Android 15 or later and include them.
-
-The Sceneform module is there so existing 1.x apps can upgrade without rewriting their rendering. For a new app, use the core module with a maintained renderer such as [SceneView](https://github.com/SceneView/sceneview-android); see [Using another renderer](https://github.com/appoly/ARCore-Location/wiki/Using-another-renderer).
+Version 2.0 is a rewrite. If you're upgrading from 1.x, read the [migration guide](https://github.com/appoly/ARCore-Location/wiki/Migrating-from-1.x) first; most method names have changed and coordinates now take latitude before longitude.
 
 ## Installation
 
@@ -34,67 +21,48 @@ dependencyResolutionManagement {
 }
 ```
 
-Then add one of the modules:
+Then add the library:
 
 ```kotlin
 dependencies {
-    // With Sceneform:
-    implementation("com.github.appoly.ARCore-Location:arcore-location-sceneform:2.0.0")
-
-    // Or the core only, for use with another renderer:
     implementation("com.github.appoly.ARCore-Location:arcore-location:2.0.0")
 }
 ```
 
-The library needs minSdk 24 and Java 17, and uses AndroidX.
+It works with ARCore directly and with any renderer, such as [SceneView](https://github.com/SceneView/sceneview-android), Filament or your own OpenGL code. It needs minSdk 24 and Java 17, and uses AndroidX.
 
-## Quick start with Sceneform
+If your app already uses Sceneform, there is also a Sceneform module; see [Existing Sceneform apps](#existing-sceneform-apps).
 
-```java
-// Once you have an ArSceneView, for example from ArFragment.setOnViewCreatedListener:
-LocationScene locationScene = new LocationScene(arSceneView);
-getLifecycle().addObserver(locationScene);
+## Quick start
 
-Node node = new Node();
-node.setRenderable(renderable);
-
-LocationMarker marker = new LocationMarker(GeoCoordinate.of(51.50073, -0.12463), node)
-        .setHeight(2f)
-        .setOnRenderListener(m -> label.setText(Math.round(m.getDistanceMetres()) + " m"));
-locationScene.addMarker(marker);
-```
-
-`LocationScene` updates itself every frame. Registering it as a lifecycle observer starts and stops location and compass updates with your activity and cleans up when it's destroyed.
-
-A few settings worth knowing about:
-
-```java
-locationScene.setMaxRenderDistanceMetres(25f);       // further markers are drawn at this distance
-locationScene.setOverlapMode(OverlapMode.STACK);     // or HIDE, or NONE
-locationScene.setMaxVisibleMarkers(20);              // nearest first
-marker.setOnlyRenderWhenWithinMetres(500);           // hide this marker when far away
-marker.setScalingMode(ScalingMode.GRADUAL_FIXED_SIZE);
-```
-
-## Using the core directly
-
-`GeoTracker` is independent of any renderer. Give it each ARCore frame, then ask where a coordinate is:
+`GeoTracker` works out where real-world coordinates are in your ARCore session. Create one and tie it to your activity's lifecycle so location and compass updates start and stop with it:
 
 ```java
 GeoTracker tracker = new GeoTracker(context);
 getLifecycle().addObserver(tracker);
+```
 
-// Every frame, after session.update():
+Then, every frame, after `session.update()`, give it the frame and ask where your target is:
+
+```java
 tracker.update(session, frame);
-GeoPlacement placement = tracker.place(target, frame.getCamera().getPose(), 25f, 0f);
-if (placement != null) {
-    Anchor anchor = session.createAnchor(Pose.makeTranslation(
-            placement.getWorldX(), placement.getWorldY(), placement.getWorldZ()));
-    // Attach your content to the anchor.
+if (frame.getCamera().getTrackingState() == TrackingState.TRACKING && tracker.isReady()) {
+    GeoPlacement placement = tracker.place(
+            GeoCoordinate.of(51.50073, -0.12463), // latitude, longitude
+            frame.getCamera().getPose(),
+            25f,  // targets further away are drawn at this distance
+            0f);  // height above the camera, in metres
+    if (placement != null) {
+        Anchor anchor = session.createAnchor(Pose.makeTranslation(
+                placement.getWorldX(), placement.getWorldY(), placement.getWorldZ()));
+        // Attach your content to the anchor.
+    }
 }
 ```
 
-The wiki page [Using another renderer](https://github.com/appoly/ARCore-Location/wiki/Using-another-renderer) covers when to re-anchor and how to read the tracker's status.
+Don't create a new anchor every frame. Keep the anchor and replace it only when the placement has moved more than about 30 cm from it. `placement.getDistanceMetres()` and `getBearingDegrees()` give the real distance and direction, for labels.
+
+`tracker.getStatus()` tells you whether it is still waiting for a GPS fix or compass reading, and `getSource()` whether it is using the Geospatial API. [Getting started](https://github.com/appoly/ARCore-Location/wiki/Getting-started) on the wiki covers anchors, status and custom sensors in more detail.
 
 ## Geospatial API
 
@@ -122,17 +90,40 @@ The compass is corrected from magnetic to true north automatically. Readings are
 
 [How placement works](https://github.com/appoly/ARCore-Location/wiki/How-placement-works) explains the method in more detail.
 
-## Example app
+## Existing Sceneform apps
 
-The `example` module shows labels at a few landmarks around the world, plus coloured spheres 20 metres north, east, south and west of where you start. To try the Geospatial API, add `arcore.apiKey=YOUR_KEY` to `local.properties`.
+`arcore-location-sceneform` adds `LocationScene` and `LocationMarker` on top of the core, for apps already built on [Sceneform](https://github.com/sceneview/sceneform-android). It handles anchors, scaling, billboarding and overlapping markers.
 
-```sh
-./gradlew :example:installDebug
+Use it only to upgrade an existing app. Google archived Sceneform in 2020, and the community fork this module uses was archived in 2024. Its bundled Filament libraries aren't aligned for 16 KB memory pages, so Google Play won't accept new apps or updates that target Android 15 or later and include them.
+
+```kotlin
+implementation("com.github.appoly.ARCore-Location:arcore-location-sceneform:2.0.0")
 ```
+
+```java
+// Once you have an ArSceneView, for example from ArFragment.setOnViewCreatedListener:
+LocationScene locationScene = new LocationScene(arSceneView);
+getLifecycle().addObserver(locationScene); // no per-frame call needed
+
+LocationMarker marker = new LocationMarker(GeoCoordinate.of(51.50073, -0.12463), node)
+        .setHeight(2f)
+        .setOnRenderListener(m -> label.setText(Math.round(m.getDistanceMetres()) + " m"));
+locationScene.addMarker(marker);
+```
+
+[Sceneform markers](https://github.com/appoly/ARCore-Location/wiki/Sceneform-markers) on the wiki covers render distance, scaling and overlap options.
 
 ## Using a coding assistant
 
 AI assistants often suggest 1.x code, which no longer compiles. Point yours at [`llms.txt`](llms.txt), a short summary of the current API. If you're working on the library itself, [`AGENTS.md`](AGENTS.md) has the build commands and project rules.
+
+## Example app
+
+The `example` module uses the Sceneform module. It shows labels at a few landmarks around the world, plus coloured spheres 20 metres north, east, south and west of where you start. To try the Geospatial API, add `arcore.apiKey=YOUR_KEY` to `local.properties`.
+
+```sh
+./gradlew :example:installDebug
+```
 
 ## Building
 
