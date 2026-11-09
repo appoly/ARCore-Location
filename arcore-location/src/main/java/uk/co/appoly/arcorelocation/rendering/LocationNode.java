@@ -199,21 +199,26 @@ public class LocationNode extends AnchorNode {
             final Vector3 cameraPosition = getScene().getCamera().getWorldPosition();
             Vector3 direction = Vector3.subtract(cameraPosition, n.getWorldPosition());
 
+            // How far through the render range the marker is: 0 at the device, 1 at (or beyond)
+            // the distance limit. Uses the capped distance so markers past the limit don't
+            // produce negative scales, and never divides by a distance that can be zero.
+            int distanceLimit = Math.max(locationScene.getDistanceLimit(), 1);
+            float distanceFraction = Math.min((float) renderDistance / distanceLimit, 1F);
+            float scaleDifference = gradualScalingMaxScale - gradualScalingMinScale;
+            float gradualScale = gradualScalingMaxScale - scaleDifference * distanceFraction;
+
             switch (scalingMode) {
                 case FIXED_SIZE_ON_SCREEN:
                     scale = (float) Math.sqrt(direction.x * direction.x
                             + direction.y * direction.y + direction.z * direction.z);
                     break;
                 case GRADUAL_TO_MAX_RENDER_DISTANCE:
-                    float scaleDifference = gradualScalingMaxScale - gradualScalingMinScale;
-                    scale = (gradualScalingMinScale + ((locationScene.getDistanceLimit() - markerDistance) * (scaleDifference / locationScene.getDistanceLimit()))) * renderDistance;
+                    scale = gradualScale * renderDistance;
                     break;
                 case GRADUAL_FIXED_SIZE:
                     scale = (float) Math.sqrt(direction.x * direction.x
                             + direction.y * direction.y + direction.z * direction.z);
-                    float gradualScale = gradualScalingMaxScale - gradualScalingMinScale;
-                    gradualScale = gradualScalingMaxScale - (gradualScale / renderDistance * markerDistance);
-                    scale *= Math.max(gradualScale, gradualScalingMinScale);
+                    scale *= gradualScale;
                     break;
             }
 
