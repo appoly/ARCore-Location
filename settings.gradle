@@ -1,1 +1,1 @@
-include ':app', ':arcore-location'
+include ':arcore-location'
