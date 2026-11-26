@@ -5,7 +5,7 @@
 agp = "9.5.1"
 arcore = "1.57.0"
 playServicesLocation = "21.4.0"
-sceneform = "1.23.0"
+sceneform = "1.24.0"
 androidxAnnotation = "1.9.1"
 androidxCore = "1.16.0"
 androidxLifecycle = "2.9.4"
