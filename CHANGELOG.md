@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `arcore-location-sceneform` moves to the maintained Sceneform 1.24.0: 16 KB page-size native libraries, Filament 1.72.1 and ARCore 1.57.0.
 - `GeoTracker` is now thread safe, so apps that update ARCore on a GL render thread can call `update` and `place` there. Listener methods are always called on the main thread.
 - New `example-core` app showing the core module with ARCore directly, without Sceneform.
 - The README, `llms.txt` and wiki lead with the core module.
